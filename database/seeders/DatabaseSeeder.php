@@ -9,6 +9,8 @@ use App\Models\User;
 use App\Models\Day;
 use App\Models\Time;
 use App\Models\Dates;
+use App\Models\Reservation;
+use App\Models\Payment;
 
 class DatabaseSeeder extends Seeder
 {
@@ -58,5 +60,20 @@ class DatabaseSeeder extends Seeder
         ]);
 
         Dates::factory()->count(56)->create();
+
+        foreach (User::all() as $user) {
+            // Randomly select a date for the reservation
+            $date = Dates::inRandomOrder()->first();
+            
+            // Generate a payment for the reservation
+            $payment = Payment::factory()->create();
+
+            // Create a reservation linked to the user and date
+            Reservation::factory()->create([
+                'userId' => $user->id,
+                'dateId' => $date->id,
+                'paymentId' => $payment->id,
+            ]);
+        }
     }
 }
