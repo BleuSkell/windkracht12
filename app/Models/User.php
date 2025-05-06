@@ -50,7 +50,7 @@ class User extends Authenticatable
 
     public function roles()
     {
-        return $this->HasOne(Role::class, 'userId');
+        return $this->BelongsTo(Role::class, 'userId');
     }
 
     public function reservations()

@@ -20,6 +20,6 @@ class Role extends Model
 
     public function users()
     {
-        return $this->BelongsTo(User::class, 'userId');
+        return $this->HasOne(User::class, 'userId');
     }
 }
