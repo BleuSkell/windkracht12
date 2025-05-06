@@ -17,7 +17,7 @@ class DayFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'day' => $this->faker->randomElement(['Maandag', 'Dinsdag', 'Woensdag', 'Donderdag', 'Vrijdag', 'Zaterdag', 'Zondag']),
         ];
     }
 }

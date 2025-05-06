@@ -17,7 +17,9 @@ class ReservationFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'userId' => User::factory(),
+            'dateId' => Dates::factory(),
+            'paymentId' => Payment::factory(),
         ];
     }
 }
