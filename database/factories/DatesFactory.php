@@ -19,8 +19,8 @@ class DatesFactory extends Factory
     public function definition(): array
     {
         return [
-            'dayId' => Day::factory(),
-            'timeId' => Time::factory(),
+            'dayId' => Day::inRandomOrder()->first()->id,
+            'timeId' => Time::inRandomOrder()->first()->id,
         ];
     }
 }

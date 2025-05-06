@@ -6,6 +6,9 @@ namespace Database\Seeders;
 use Illuminate\Database\Seeder;
 use App\Models\Role;
 use App\Models\User;
+use App\Models\Day;
+use App\Models\Time;
+use App\Models\Dates;
 
 class DatabaseSeeder extends Seeder
 {
@@ -32,5 +35,28 @@ class DatabaseSeeder extends Seeder
                 'roleId' => $roles[array_rand([$roles[0]->id, $roles[1]->id])]
             ]);
         }
+
+        Day::factory()->createMany([
+            ['day' => 'Maandag'],
+            ['day' => 'Dinsdag'],
+            ['day' => 'Woensdag'],
+            ['day' => 'Donderdag'],
+            ['day' => 'Vrijdag'],
+            ['day' => 'Zaterdag'],
+            ['day' => 'Zondag']
+        ]);
+
+        Time::factory()->createMany([
+            ['time' => '10:00'],
+            ['time' => '11:00'],
+            ['time' => '12:00'],
+            ['time' => '13:00'],
+            ['time' => '14:00'],
+            ['time' => '15:00'],
+            ['time' => '16:00'],
+            ['time' => '17:00']
+        ]);
+
+        Dates::factory()->count(56)->create();
     }
 }
