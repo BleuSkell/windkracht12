@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
 use Illuminate\View\View;
+use App\Models\Role;
 
 class RegisteredUserController extends Controller
 {
@@ -34,8 +35,12 @@ class RegisteredUserController extends Controller
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ]);
+        
+        // default role = customer Id
+        $defaultRole = Role::where('roleName', 'customer')->value('id');
 
         $user = User::create([
+            'roleId' => $defaultRole,
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
