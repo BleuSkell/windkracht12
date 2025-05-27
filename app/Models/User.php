@@ -51,7 +51,7 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function roles()
     {
-        return $this->BelongsTo(Role::class, 'userId');
+        return $this->BelongsTo(Role::class, 'roleId');
     }
 
     public function reservations()

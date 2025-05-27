@@ -21,7 +21,7 @@ class DatabaseSeeder extends Seeder
     {   
         $roles = [
             Role::factory()->create(['roleName' => 'customer']),
-            Role::factory()->create(['roleName' => 'employee']),
+            Role::factory()->create(['roleName' => 'instructor']),
             Role::factory()->create(['roleName' => 'owner']),
         ];
 
