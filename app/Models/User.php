@@ -8,6 +8,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use App\Models\Role;
 use App\Models\Reservation;
+use App\Models\Contact;
 
 class User extends Authenticatable implements MustVerifyEmail
 {
@@ -56,6 +57,11 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function reservations()
     {
-        return $this->HasMany(Reservation::class, 'userId');
+        return $this->HasMany(Reservation::class, 'reservationId');
+    }
+
+    public function contact()
+    {
+        return $this->belongsTo(Contact::class, 'userId');
     }
 }

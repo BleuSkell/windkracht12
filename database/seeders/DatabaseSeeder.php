@@ -11,6 +11,7 @@ use App\Models\Time;
 use App\Models\Dates;
 use App\Models\Reservation;
 use App\Models\Payment;
+use App\Models\Contact;
 
 class DatabaseSeeder extends Seeder
 {
@@ -31,11 +32,14 @@ class DatabaseSeeder extends Seeder
             'email' => 'test@gmail.com',
             'password' => bcrypt('Password123'),
         ]);
+        
+        Contact::factory()->create(['userId' => $owner->id]);
 
         for ($i = 0; $i < 9; $i++) {
-            User::factory()->create([
-                'roleId' => $roles[array_rand([$roles[0]->id, $roles[1]->id])]
+            $user = User::factory()->create([
+            'roleId' => $roles[array_rand([$roles[0]->id, $roles[1]->id])]
             ]);
+            Contact::factory()->create(['userId' => $user->id]);
         }
 
         Day::factory()->createMany([
