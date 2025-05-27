@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
 use Illuminate\View\View;
 use App\Models\Role;
+use App\Models\Contact;
 
 class RegisteredUserController extends Controller
 {
@@ -41,6 +42,18 @@ class RegisteredUserController extends Controller
             'roleId' => $defaultRole,
             'email' => $request->email,
             'password' => '',
+        ]);
+
+        Contact::create([
+            'userId' => $user->id,
+            'firstName' => '',
+            'infix' => null,
+            'lastName' => '',
+            'adress' => '',
+            'city' => '',
+            'dateOfBirth' => null,
+            'bsnNumber' => '',
+            'mobile' => '',
         ]);
 
         event(new Registered($user));

@@ -25,7 +25,7 @@ class ProfileController extends Controller
      * Update the user's profile information.
      */
     public function update(ProfileUpdateRequest $request): RedirectResponse
-    {
+    {   
         $request->user()->fill($request->validated());
 
         if ($request->user()->isDirty('email')) {
@@ -35,6 +35,30 @@ class ProfileController extends Controller
         $request->user()->save();
 
         return Redirect::route('profile.edit')->with('status', 'profile-updated');
+    }
+
+    public function updateContact(Request $request): RedirectResponse
+    {
+        $validated = $request->validate([
+            'firstName' => ['required', 'string', 'max:255'],
+            'infix' => ['nullable', 'string', 'max:255'],
+            'lastName' => ['required', 'string', 'max:255'],
+            'adress' => ['required', 'string', 'max:255'],
+            'city' => ['required', 'string', 'max:255'],
+            'dateOfBirth' => ['required', 'date'],
+            'bsnNumber' => ['required', 'string', 'max:255'],
+            'mobile' => ['required', 'string', 'max:255'],
+        ]);
+
+        $contact = $request->user()->contact;
+        if (!$contact) {
+            $contact = $request->user()->contact()->create($validated);
+        } else {
+            $contact->fill($validated);
+            $contact->save();
+        }
+
+        return Redirect::route('profile.edit')->with('status', 'contact-updated');
     }
 
     /**

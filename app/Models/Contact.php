@@ -14,10 +14,15 @@ class Contact extends Model
     protected $table = 'contacts';
 
     protected $fillable = [
-        'name',
-        'email',
-        'phone',
-        'message',
+        'userId',
+        'firstName',
+        'infix',
+        'lastName',
+        'adress',
+        'city',
+        'dateOfBirth',
+        'bsnNumber',
+        'mobile',
     ];
 
     public function user()

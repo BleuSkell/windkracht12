@@ -14,14 +14,14 @@ return new class extends Migration
         Schema::create('contacts', function (Blueprint $table) {
             $table->id();
             $table->foreignId('userId')->constrained('users')->onDelete('cascade');
-            $table->string('firstName');
+            $table->string('firstName')->nullable();
             $table->string('infix')->nullable();
-            $table->string('lastName');
-            $table->string('adress');
-            $table->string('city');
-            $table->date('dateOfBirth');
-            $table->string('bsnNumber')->unique();
-            $table->string('mobile')->unique();
+            $table->string('lastName')->nullable();
+            $table->string('adress')->nullable();
+            $table->string('city')->nullable();
+            $table->date('dateOfBirth')->nullable();
+            $table->string('bsnNumber')->nullable()->unique();
+            $table->string('mobile')->nullable()->unique();
             $table->timestamps();
         });
     }
