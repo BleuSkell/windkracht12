@@ -22,6 +22,6 @@ class Contact extends Model
 
     public function user()
     {
-        return $this->hasOne(User::class, 'contactId');
+        return $this->belongsTo(User::class, 'userId');
     }
 }

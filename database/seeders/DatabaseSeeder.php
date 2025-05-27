@@ -28,7 +28,6 @@ class DatabaseSeeder extends Seeder
 
         $owner = User::factory()->create([
             'roleId' => $roles[2]->id,
-            'name' => 'Owner',
             'email' => 'test@gmail.com',
             'password' => bcrypt('Password123'),
         ]);

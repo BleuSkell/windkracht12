@@ -5,12 +5,13 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Role;
+use App\Models\Contact;
 
 class UserController extends Controller
 {
     public function index()
     {   
-        $users = User::with('roles')->get();
+        $users = User::with(['roles', 'contact'])->get();
 
         return view('users.index', compact('users'));
     }
