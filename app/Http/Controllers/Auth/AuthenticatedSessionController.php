@@ -8,6 +8,8 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
+use Illuminate\Support\Facades\Log;
+use Carbon\Carbon as CARBON;
 
 class AuthenticatedSessionController extends Controller
 {
@@ -28,6 +30,11 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
+        Log::channel('authlog')->info('LOGIN', [
+            'datatime' => CARBON::now()->format('Y-m-d H:i:s'),
+            'email' => $request->input('email'),
+        ]);
+
         return redirect()->intended(route('dashboard', absolute: false));
     }
 
@@ -35,7 +42,16 @@ class AuthenticatedSessionController extends Controller
      * Destroy an authenticated session.
      */
     public function destroy(Request $request): RedirectResponse
-    {
+    {   
+        $user = Auth::user();
+
+        if ($user) {
+            Log::channel('authlog')->info('LOGOUT', [
+                'datetime' => now()->format('Y-m-d H:i:s.u'),
+                'email' => $user->email,
+            ]);
+        }
+
         Auth::guard('web')->logout();
 
         $request->session()->invalidate();
