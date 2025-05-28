@@ -26,7 +26,7 @@
                             <select id="packageId" name="packageId" class="mt-1 block w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm" required>
                                 <option value="">Selecteer een pakket</option>
                                 @foreach($packages as $package)
-                                    <option value="{{ $package->id }}" data-is-duo="{{ $package->isDuo }}">
+                                    <option value="{{ $package->id }}" data-is-duo="{{ $package->isDuo ? 1 : 0 }}">
                                         {{ $package->name }} - €{{ number_format($package->price, 2) }}
                                     </option>
                                 @endforeach
@@ -57,8 +57,9 @@
                             <x-input-error :messages="$errors->get('reservationTime')" class="mt-2" />
                         </div>
 
+                        <!-- Add duo partner fields section -->
                         <div id="duoPartnerFields" class="space-y-6 hidden">
-                            <h3 class="font-semibold text-lg">Gegevens duo partner</h3>
+                            <h3 class="font-semibold text-lg">Gegevens Duo Partner</h3>
                             
                             <div>
                                 <x-input-label for="duoPartnerName" value="Naam" />
@@ -86,7 +87,7 @@
 
                             <div>
                                 <x-input-label for="duoPartnerPhone" value="Telefoonnummer" />
-                                <x-text-input id="duoPartnerPhone" name="duoPartnerPhone" type="tel" class="mt-1 block w-full" />
+                                <x-text-input id="duoPartnerPhone" name="duoPartnerPhone" type="text" class="mt-1 block w-full" />
                                 <x-input-error :messages="$errors->get('duoPartnerPhone')" class="mt-2" />
                             </div>
                         </div>
@@ -102,26 +103,27 @@
         </div>
     </div>
 
-    @push('scripts')
     <script>
-        document.getElementById('packageId').addEventListener('change', function() {
-            const selectedOption = this.options[this.selectedIndex];
-            const isDuo = selectedOption.getAttribute('data-is-duo') === '1';
+        document.addEventListener('DOMContentLoaded', function() {
+            const packageSelect = document.getElementById('packageId');
             const duoPartnerFields = document.getElementById('duoPartnerFields');
-            
-            if (isDuo) {
-                duoPartnerFields.classList.remove('hidden');
-                duoPartnerFields.querySelectorAll('input').forEach(input => {
-                    input.required = true;
-                });
-            } else {
-                duoPartnerFields.classList.add('hidden');
-                duoPartnerFields.querySelectorAll('input').forEach(input => {
-                    input.required = false;
-                    input.value = '';
+            const duoInputs = duoPartnerFields.querySelectorAll('input');
+
+            function toggleDuoFields() {
+                const selectedOption = packageSelect.options[packageSelect.selectedIndex];
+                const isDuo = selectedOption.dataset.isDuo === '1';
+                
+                duoPartnerFields.classList.toggle('hidden', !isDuo);
+                
+                // Toggle required attribute on duo partner fields
+                duoInputs.forEach(input => {
+                    input.required = isDuo;
                 });
             }
+
+            packageSelect.addEventListener('change', toggleDuoFields);
+            // Run once on page load in case of form validation errors
+            toggleDuoFields();
         });
     </script>
-    @endpush
 </x-app-layout>
