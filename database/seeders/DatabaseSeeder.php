@@ -40,43 +40,5 @@ class DatabaseSeeder extends Seeder
             ]);
             Contact::factory()->create(['userId' => $user->id]);
         }
-
-        Day::factory()->createMany([
-            ['day' => 'Maandag'],
-            ['day' => 'Dinsdag'],
-            ['day' => 'Woensdag'],
-            ['day' => 'Donderdag'],
-            ['day' => 'Vrijdag'],
-            ['day' => 'Zaterdag'],
-            ['day' => 'Zondag']
-        ]);
-
-        Time::factory()->createMany([
-            ['time' => '10:00'],
-            ['time' => '11:00'],
-            ['time' => '12:00'],
-            ['time' => '13:00'],
-            ['time' => '14:00'],
-            ['time' => '15:00'],
-            ['time' => '16:00'],
-            ['time' => '17:00']
-        ]);
-
-        Dates::factory()->count(56)->create();
-
-        foreach (User::all() as $user) {
-            // Randomly select a date for the reservation
-            $date = Dates::inRandomOrder()->first();
-            
-            // Generate a payment for the reservation
-            $payment = Payment::factory()->create();
-
-            // Create a reservation linked to the user and date
-            Reservation::factory()->create([
-                'userId' => $user->id,
-                'dateId' => $date->id,
-                'paymentId' => $payment->id,
-            ]);
-        }
     }
 }
