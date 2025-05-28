@@ -16,13 +16,13 @@ class Reservation extends Model
         'userId',
         'packageId',
         'locationId',
+        'reservationDate',
+        'reservationTime',
         'duoPartnerName',
         'duoPartnerEmail',
         'duoPartnerAddress',
         'duoPartnerCity',
         'duoPartnerPhone',
-        'reservationDate',
-        'reservationTime'
     ];
 
     public function user()

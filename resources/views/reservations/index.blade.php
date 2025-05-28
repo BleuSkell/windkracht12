@@ -45,23 +45,27 @@
                                     @endif
 
                                     <div class="border-t border-gray-200 dark:border-gray-600 pt-4">
-                                        <p><span class="font-semibold">Factuurnummer:</span> {{ $reservation->invoice->invoiceNumber }}</p>
-                                        <p><span class="font-semibold">Bedrag:</span> €{{ number_format($reservation->invoice->amount, 2) }}</p>
-                                        <p class="mb-2">
-                                            <span class="font-semibold">Status:</span>
-                                            <span class="@if($reservation->invoice->status === 'paid') text-green-500 @else text-red-500 @endif">
-                                                {{ $reservation->invoice->status === 'paid' ? 'Betaald' : 'Niet betaald' }}
-                                            </span>
-                                        </p>
-                                        
-                                        @if($reservation->invoice->status === 'unpaid')
-                                            <form method="POST" action="{{ route('reservations.update-payment', $reservation) }}">
-                                                @csrf
-                                                @method('PATCH')
-                                                <button type="submit" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded text-sm w-full">
-                                                    Markeer als betaald
-                                                </button>
-                                            </form>
+                                        @if($reservation->invoice)
+                                            <p><span class="font-semibold">Factuurnummer:</span> {{ $reservation->invoice->invoiceNumber }}</p>
+                                            <p><span class="font-semibold">Bedrag:</span> €{{ number_format($reservation->invoice->amount, 2) }}</p>
+                                            <p class="mb-2">
+                                                <span class="font-semibold">Status:</span>
+                                                <span class="@if($reservation->invoice->status === 'paid') text-green-500 @else text-red-500 @endif">
+                                                    {{ $reservation->invoice->status === 'paid' ? 'Betaald' : 'Niet betaald' }}
+                                                </span>
+                                            </p>
+                                            
+                                            @if($reservation->invoice->status === 'unpaid')
+                                                <form method="POST" action="{{ route('reservations.update-payment', $reservation) }}">
+                                                    @csrf
+                                                    @method('PATCH')
+                                                    <button type="submit" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded text-sm w-full">
+                                                        Markeer als betaald
+                                                    </button>
+                                                </form>
+                                            @endif
+                                        @else
+                                            <p class="text-red-500">Geen factuur gevonden</p>
                                         @endif
                                     </div>
                                 </div>
