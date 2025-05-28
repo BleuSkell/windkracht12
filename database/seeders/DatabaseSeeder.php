@@ -6,12 +6,11 @@ namespace Database\Seeders;
 use Illuminate\Database\Seeder;
 use App\Models\Role;
 use App\Models\User;
-use App\Models\Day;
-use App\Models\Time;
-use App\Models\Dates;
-use App\Models\Reservation;
-use App\Models\Payment;
 use App\Models\Contact;
+use App\Models\Package;
+use App\Models\Location;
+use App\Models\Reservation;
+use App\Models\Invoice;
 
 class DatabaseSeeder extends Seeder
 {
@@ -40,5 +39,22 @@ class DatabaseSeeder extends Seeder
             ]);
             Contact::factory()->create(['userId' => $user->id]);
         }
+
+        // Create packages
+        Package::factory()->count(5)->create();
+
+        // Create locations
+        Location::factory()->count(3)->create();
+
+        // Create reservations with invoices
+        Reservation::factory()
+            ->count(20)
+            ->create()
+            ->each(function ($reservation) {
+                Invoice::factory()->create([
+                    'reservationId' => $reservation->id,
+                    'amount' => $reservation->package->price
+                ]);
+            });
     }
 }

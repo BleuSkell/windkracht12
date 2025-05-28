@@ -1,0 +1,118 @@
+<x-app-layout>
+    <x-slot name="header">
+        <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
+            {{ __('Nieuwe Reservering') }}
+        </h2>
+    </x-slot>
+
+    <div class="py-12">
+        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+            <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
+                <div class="p-6 text-gray-900 dark:text-gray-100">
+                    <form method="POST" action="{{ route('reservations.store') }}" class="space-y-6">
+                        @csrf
+
+                        <div>
+                            <x-input-label for="packageId" value="Kies een pakket" />
+                            <select id="packageId" name="packageId" class="mt-1 block w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm" required>
+                                <option value="">Selecteer een pakket</option>
+                                @foreach($packages as $package)
+                                    <option value="{{ $package->id }}" data-is-duo="{{ $package->isDuo }}">
+                                        {{ $package->name }} - €{{ number_format($package->price, 2) }}
+                                    </option>
+                                @endforeach
+                            </select>
+                            <x-input-error :messages="$errors->get('packageId')" class="mt-2" />
+                        </div>
+
+                        <div>
+                            <x-input-label for="locationId" value="Kies een locatie" />
+                            <select id="locationId" name="locationId" class="mt-1 block w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm" required>
+                                <option value="">Selecteer een locatie</option>
+                                @foreach($locations as $location)
+                                    <option value="{{ $location->id }}">{{ $location->name }}</option>
+                                @endforeach
+                            </select>
+                            <x-input-error :messages="$errors->get('locationId')" class="mt-2" />
+                        </div>
+
+                        <div>
+                            <x-input-label for="reservationDate" value="Kies een locatie" />
+                            <input type="date" name="reservationDate" id="reservationDate" class="mt-1 block w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm" required>
+                            <x-input-error :messages="$errors->get('reservationDate')" class="mt-2" />
+                        </div>
+
+                        <div>
+                            <x-input-label for="reservationTime" value="Kies een tijd" />
+                            <input type="time" name="reservationTime" id="reservationTime" class="mt-1 block w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm" required>
+                            <x-input-error :messages="$errors->get('reservationTime')" class="mt-2" />
+                        </div>
+
+                        <div id="duoPartnerFields" class="space-y-6 hidden">
+                            <h3 class="font-semibold text-lg">Gegevens duo partner</h3>
+                            
+                            <div>
+                                <x-input-label for="duoPartnerName" value="Naam" />
+                                <x-text-input id="duoPartnerName" name="duoPartnerName" type="text" class="mt-1 block w-full" />
+                                <x-input-error :messages="$errors->get('duoPartnerName')" class="mt-2" />
+                            </div>
+
+                            <div>
+                                <x-input-label for="duoPartnerEmail" value="E-mail" />
+                                <x-text-input id="duoPartnerEmail" name="duoPartnerEmail" type="email" class="mt-1 block w-full" />
+                                <x-input-error :messages="$errors->get('duoPartnerEmail')" class="mt-2" />
+                            </div>
+
+                            <div>
+                                <x-input-label for="duoPartnerAddress" value="Adres" />
+                                <x-text-input id="duoPartnerAddress" name="duoPartnerAddress" type="text" class="mt-1 block w-full" />
+                                <x-input-error :messages="$errors->get('duoPartnerAddress')" class="mt-2" />
+                            </div>
+
+                            <div>
+                                <x-input-label for="duoPartnerCity" value="Woonplaats" />
+                                <x-text-input id="duoPartnerCity" name="duoPartnerCity" type="text" class="mt-1 block w-full" />
+                                <x-input-error :messages="$errors->get('duoPartnerCity')" class="mt-2" />
+                            </div>
+
+                            <div>
+                                <x-input-label for="duoPartnerPhone" value="Telefoonnummer" />
+                                <x-text-input id="duoPartnerPhone" name="duoPartnerPhone" type="tel" class="mt-1 block w-full" />
+                                <x-input-error :messages="$errors->get('duoPartnerPhone')" class="mt-2" />
+                            </div>
+                        </div>
+
+                        <div class="flex items-center justify-end mt-4">
+                            <x-primary-button class="ml-4">
+                                Reserveer
+                            </x-primary-button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @push('scripts')
+    <script>
+        document.getElementById('packageId').addEventListener('change', function() {
+            const selectedOption = this.options[this.selectedIndex];
+            const isDuo = selectedOption.getAttribute('data-is-duo') === '1';
+            const duoPartnerFields = document.getElementById('duoPartnerFields');
+            
+            if (isDuo) {
+                duoPartnerFields.classList.remove('hidden');
+                duoPartnerFields.querySelectorAll('input').forEach(input => {
+                    input.required = true;
+                });
+            } else {
+                duoPartnerFields.classList.add('hidden');
+                duoPartnerFields.querySelectorAll('input').forEach(input => {
+                    input.required = false;
+                    input.value = '';
+                });
+            }
+        });
+    </script>
+    @endpush
+</x-app-layout>
