@@ -30,7 +30,12 @@
                                     
                                     <div class="space-y-2 mb-4">
                                         <p><span class="font-semibold">Locatie:</span> {{ $reservation->location->name }}</p>
-                                        <p><span class="font-semibold">Datum:</span> {{ $reservation->date }}</p>
+                                        <p><span class="font-semibold">Datum:</span>
+                                            {{ \Carbon\Carbon::parse($reservation->reservationDate)->format('d-m-Y') }}
+                                        </p>
+                                        <p><span class="font-semibold">Tijd:</span>
+                                            {{ \Carbon\Carbon::parse($reservation->reservationTime)->format('H:i') }}
+                                        </p>
                                         <p><span class="font-semibold">Aantal lessen:</span> {{ $reservation->package->numberOfLessons }}</p>
                                     </div>
 
@@ -43,6 +48,81 @@
                                             <p>{{ $reservation->duoPartnerCity }}</p>
                                         </div>
                                     @endif
+
+                                    @if(!$reservation->cancellationStatus)
+                                        <div class="mt-4">
+                                            <button onclick="showCancelModal({{ $reservation->id }})" 
+                                                    class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded text-sm">
+                                                Les annuleren
+                                            </button>
+                                        </div>
+                                    @elseif($reservation->cancellationStatus === 'pending')
+                                        <div class="mt-4 p-2 bg-yellow-100 rounded">
+                                            <p class="text-yellow-700">Annuleringsverzoek in behandeling</p>
+                                        </div>
+                                    @elseif($reservation->cancellationStatus === 'approved')
+                                        <div class="mt-4">
+                                            <button onclick="showRescheduleModal({{ $reservation->id }})" 
+                                                    class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded text-sm">
+                                                Nieuwe datum kiezen
+                                            </button>
+                                        </div>
+                                    @endif
+
+                                    <!-- Cancel Modal -->
+                                    <div id="cancelModal{{ $reservation->id }}" class="hidden fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full">
+                                        <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
+                                            <form method="POST" action="{{ route('reservations.cancel', $reservation) }}">
+                                                @csrf
+                                                <h3 class="text-lg font-medium mb-4">Les annuleren</h3>
+                                                <div class="mb-4">
+                                                    <label for="reason" class="block text-sm font-medium text-gray-700">Reden voor annulering</label>
+                                                    <textarea name="reason" id="reason" rows="4" 
+                                                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" required></textarea>
+                                                </div>
+                                                <div class="flex justify-end space-x-2">
+                                                    <button type="button" onclick="hideCancelModal({{ $reservation->id }})"
+                                                        class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">
+                                                        Annuleren
+                                                    </button>
+                                                    <button type="submit"
+                                                        class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">
+                                                        Bevestigen
+                                                    </button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+
+                                    <!-- Reschedule Modal -->
+                                    <div id="rescheduleModal{{ $reservation->id }}" class="hidden fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full">
+                                        <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
+                                            <form method="POST" action="{{ route('reservations.reschedule', $reservation) }}">
+                                                @csrf
+                                                <h3 class="text-lg font-medium mb-4">Nieuwe datum kiezen</h3>
+                                                <div class="mb-4">
+                                                    <label for="reservationDate" class="block text-sm font-medium text-gray-700">Nieuwe datum</label>
+                                                    <input type="date" name="reservationDate" id="reservationDate" 
+                                                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" required>
+                                                </div>
+                                                <div class="mb-4">
+                                                    <label for="reservationTime" class="block text-sm font-medium text-gray-700">Nieuwe tijd</label>
+                                                    <input type="time" name="reservationTime" id="reservationTime" 
+                                                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" required>
+                                                </div>
+                                                <div class="flex justify-end space-x-2">
+                                                    <button type="button" onclick="hideRescheduleModal({{ $reservation->id }})"
+                                                        class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">
+                                                        Annuleren
+                                                    </button>
+                                                    <button type="submit"
+                                                        class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">
+                                                        Bevestigen
+                                                    </button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
 
                                     <div class="border-t border-gray-200 dark:border-gray-600 pt-4">
                                         @if($reservation->invoice)
@@ -76,4 +156,22 @@
             </div>
         </div>
     </div>
+
+    <script>
+        function showCancelModal(id) {
+            document.getElementById('cancelModal' + id).classList.remove('hidden');
+        }
+
+        function hideCancelModal(id) {
+            document.getElementById('cancelModal' + id).classList.add('hidden');
+        }
+
+        function showRescheduleModal(id) {
+            document.getElementById('rescheduleModal' + id).classList.remove('hidden');
+        }
+
+        function hideRescheduleModal(id) {
+            document.getElementById('rescheduleModal' + id).classList.add('hidden');
+        }
+    </script>
 </x-app-layout>

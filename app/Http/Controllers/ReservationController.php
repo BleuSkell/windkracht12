@@ -104,4 +104,54 @@ class ReservationController extends Controller
         return redirect()->route('reservations.index')
             ->with('success', 'Betalingsstatus bijgewerkt.');
     }
+
+    public function cancelDate(Request $request, Reservation $reservation)
+    {
+        $validated = $request->validate([
+            'reason' => 'required|string|min:10',
+        ]);
+
+        $reservation->update([
+            'cancellationReason' => $validated['reason'],
+            'cancellationStatus' => 'pending', // pending, approved, rejected
+            'originalDate' => $reservation->reservationDate,
+            'originalTime' => $reservation->reservationTime,
+        ]);
+
+        return redirect()->route('reservations.index')
+            ->with('success', 'Annuleringsverzoek is ingediend. We nemen zo spoedig mogelijk contact met je op.');
+    }
+
+    public function reschedule(Request $request, Reservation $reservation)
+    {
+        if ($reservation->cancellationStatus !== 'approved') {
+            return back()->with('error', 'Je kunt alleen een nieuwe datum kiezen als je annulering is goedgekeurd.');
+        }
+
+        // Add validation for package lesson limits
+        $usedLessons = Reservation::where('packageId', $reservation->packageId)
+            ->where('userId', auth()->id())
+            ->count();
+            
+        if ($usedLessons >= $reservation->package->numberOfLessons) {
+            return back()->with('error', 'Je hebt al het maximum aantal lessen voor dit pakket gebruikt.');
+        }
+
+        $validated = $request->validate([
+            'reservationDate' => 'required|date|after:today',
+            'reservationTime' => 'required|date_format:H:i',
+        ]);
+
+        $reservation->update([
+            'reservationDate' => $validated['reservationDate'],
+            'reservationTime' => $validated['reservationTime'],
+            'cancellationStatus' => null,
+            'cancellationReason' => null,
+            'originalDate' => null,
+            'originalTime' => null,
+        ]);
+
+        return redirect()->route('reservations.index')
+            ->with('success', 'Je les is succesvol verplaatst.');
+    }
 }

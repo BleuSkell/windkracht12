@@ -39,11 +39,13 @@
             <x-text-input id="dateOfBirth" name="dateOfBirth" type="date" class="mt-1 block w-full"
                 :value="old('dateOfBirth', $user->contact->dateOfBirth ?? '')" required />
         </div>
-        <div>
-            <x-input-label for="bsnNumber" value="BSN" />
-            <x-text-input id="bsnNumber" name="bsnNumber" type="text" class="mt-1 block w-full"
-                :value="old('bsnNumber', $user->contact->bsnNumber ?? '')" required />
-        </div>
+        @if(Auth::user()->roles->roleName = 'instructor' || Auth::user()->roles->roleName = 'owner')
+            <div>
+                <x-input-label for="bsnNumber" value="BSN" />
+                <x-text-input id="bsnNumber" name="bsnNumber" type="text" class="mt-1 block w-full"
+                    :value="old('bsnNumber', $user->contact->bsnNumber ?? '')" required />
+            </div>
+        @endif
         <div>
             <x-input-label for="mobile" value="Mobiel" />
             <x-text-input id="mobile" name="mobile" type="text" class="mt-1 block w-full"

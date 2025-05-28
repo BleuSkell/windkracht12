@@ -20,6 +20,10 @@ return new class extends Migration
             $table->string('duoPartnerPhone')->nullable();
             $table->date('reservationDate');
             $table->time('reservationTime');
+            $table->text('cancellationReason')->nullable();
+            $table->enum('cancellationStatus', ['pending', 'approved', 'rejected'])->nullable();
+            $table->date('originalDate')->nullable();
+            $table->time('originalTime')->nullable();
             $table->timestamps();
         });
     }

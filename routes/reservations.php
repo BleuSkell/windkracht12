@@ -10,4 +10,8 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/reserveren', [ReservationController::class, 'store'])->name('reservations.store');
     Route::patch('/reserveringen/{reservation}/betaling', [ReservationController::class, 'updatePaymentStatus'])
         ->name('reservations.update-payment');
+    Route::post('/reserveringen/{reservation}/cancel', [ReservationController::class, 'cancelDate'])
+        ->name('reservations.cancel');
+    Route::post('/reserveringen/{reservation}/reschedule', [ReservationController::class, 'reschedule'])
+        ->name('reservations.reschedule');
 });

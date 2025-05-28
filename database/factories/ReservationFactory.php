@@ -32,6 +32,10 @@ class ReservationFactory extends Factory
             'duoPartnerPhone' => $package->isDuo ? $this->faker->phoneNumber() : null,
             'reservationDate' => $this->faker->dateTimeBetween('now', '+1 month'),
             'reservationTime' => $this->faker->time(),
+            'cancellationReason' => null,
+            'cancellationStatus' => null,
+            'originalDate' => null,
+            'originalTime' => null,
         ];
     }
 }
