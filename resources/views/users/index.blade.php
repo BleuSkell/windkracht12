@@ -39,14 +39,6 @@
                                         Edit
                                     </button>
                                 </a>
-
-                                <form action="" method="POST">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="">
-                                        Delete
-                                    </button>
-                                </form>
                             </div>
                         </div>
                     @endforeach
