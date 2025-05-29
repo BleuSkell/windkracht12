@@ -54,6 +54,10 @@
                                             <td class="px-4 py-2">{{ $customer->user->contact->city }}</td>
                                             <td class="px-4 py-2">{{ $customer->user->contact->mobile }}</td>
                                             <td class="px-4 py-2">
+                                                <a href="{{ route('instructor.customers.lessons', $customer) }}" 
+                                                   class="text-blue-500 hover:text-blue-700 mr-2">
+                                                    Lessen
+                                                </a>
                                                 <a href="{{ route('instructor.customers.edit', $customer) }}" 
                                                    class="text-blue-500 hover:text-blue-700 mr-2">
                                                     Bewerken

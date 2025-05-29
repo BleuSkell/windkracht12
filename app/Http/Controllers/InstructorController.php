@@ -7,6 +7,7 @@ use App\Models\Role;
 use App\Models\Contact;
 use App\Models\Customer;
 use App\Models\Instructor;
+use App\Models\Reservation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -54,10 +55,9 @@ class InstructorController extends Controller
 
     public function customerEdit(Customer $customer)
     {
-        // Check if customer belongs to instructor
         $instructor = auth()->user()->instructor;
         if (!$instructor->customers->contains($customer->id)) {
-            return redirect()->route('instructors.customers.index')
+            return redirect()->route('instructor.customers.index')
                 ->with('error', 'Je hebt geen toegang tot deze klant.');
         }
 
@@ -67,10 +67,9 @@ class InstructorController extends Controller
 
     public function customerUpdate(Request $request, Customer $customer)
     {
-        // Check if customer belongs to instructor
         $instructor = auth()->user()->instructor;
         if (!$instructor->customers->contains($customer->id)) {
-            return redirect()->route('instructors.customers.index')
+            return redirect()->route('instructor.customers.index')
                 ->with('error', 'Je hebt geen toegang tot deze klant.');
         }
 
@@ -78,32 +77,75 @@ class InstructorController extends Controller
             'email' => 'required|email|unique:users,email,'.$customer->user->id,
             'firstName' => 'required|string|max:255',
             'lastName' => 'required|string|max:255',
-            'address' => 'required|string|max:255',
+            'adress' => 'required|string|max:255',
             'city' => 'required|string|max:255',
             'dateOfBirth' => 'required|date',
             'mobile' => 'required|string|max:255',
         ]);
 
-        DB::beginTransaction();
-
         try {
-            $customer->user->update(['email' => $validated['email']]);
-            
-            $customer->user->contact->update([
-                'firstName' => $validated['firstName'],
-                'lastName' => $validated['lastName'],
-                'adress' => $validated['address'], // Note: DB column is 'adress'
-                'city' => $validated['city'],
-                'dateOfBirth' => $validated['dateOfBirth'],
-                'mobile' => $validated['mobile'],
-            ]);
+            DB::transaction(function () use ($customer, $validated) {
+                $customer->user->update(['email' => $validated['email']]);
+                
+                $customer->user->contact->update([
+                    'firstName' => $validated['firstName'],
+                    'lastName' => $validated['lastName'],
+                    'adress' => $validated['adress'],
+                    'city' => $validated['city'],
+                    'dateOfBirth' => $validated['dateOfBirth'],
+                    'mobile' => $validated['mobile'],
+                ]);
+            });
 
-            DB::commit();
-            return redirect()->route('instructors.customers.index')
+            return redirect()->route('instructor.customers.index')
                 ->with('success', 'Klantgegevens succesvol bijgewerkt.');
         } catch (\Exception $e) {
-            DB::rollback();
-            return back()->withInput()->withErrors(['error' => 'Er is iets misgegaan: ' . $e->getMessage()]);
+            return back()->withInput()
+                ->withErrors(['error' => 'Er is iets misgegaan: ' . $e->getMessage()]);
+        }
+    }
+
+    public function customerLessons(Customer $customer)
+    {
+        $instructor = auth()->user()->instructor;
+        if (!$instructor->customers->contains($customer->id)) {
+            return redirect()->route('instructor.customers.index')
+                ->with('error', 'Je hebt geen toegang tot deze klant.');
+        }
+
+        $lessons = Reservation::where('userId', $customer->userId)
+            ->with(['package', 'location'])
+            ->orderBy('reservationDate', 'desc')
+            ->get();
+
+        return view('instructors.customers.lessons', compact('customer', 'lessons'));
+    }
+
+    public function updateCustomerLessons(Request $request, Customer $customer)
+    {
+        $instructor = auth()->user()->instructor;
+        if (!$instructor->customers->contains($customer->id)) {
+            return redirect()->route('instructor.customers.index')
+                ->with('error', 'Je hebt geen toegang tot deze klant.');
+        }
+
+        $validated = $request->validate([
+            'lesson_id' => 'required|exists:reservations,id',
+            'status' => 'required|in:completed,cancelled,pending',
+            'notes' => 'nullable|string|max:1000',
+        ]);
+
+        try {
+            $lesson = Reservation::findOrFail($validated['lesson_id']);
+            $lesson->update([
+                'status' => $validated['status'],
+                'notes' => $validated['notes'],
+            ]);
+
+            return back()->with('success', 'Lesgegevens zijn bijgewerkt.');
+        } catch (\Exception $e) {
+            return back()->withInput()
+                ->withErrors(['error' => 'Er is iets misgegaan: ' . $e->getMessage()]);
         }
     }
 

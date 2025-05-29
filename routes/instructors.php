@@ -17,6 +17,12 @@ Route::middleware(['auth', IsInstructor::class])->group(function () {
     Route::get('/instructeur/klanten/{customer}/edit', [InstructorController::class, 'customerEdit'])
         ->name('instructor.customers.edit');
 
+    Route::get('/instructeur/klanten/{customer}/lessen', [InstructorController::class, 'customerLessons'])
+        ->name('instructor.customers.lessons');
+
+    Route::put('/instructeur/klanten/{customer}/lessen', [InstructorController::class, 'updateCustomerLessons'])
+        ->name('instructor.customers.lessons.update');
+
     Route::put('/instructeur/klanten/{customer}', [InstructorController::class, 'customerUpdate'])
         ->name('instructor.customers.update');
 
