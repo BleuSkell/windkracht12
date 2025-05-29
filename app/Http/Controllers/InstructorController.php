@@ -15,6 +15,10 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use Illuminate\Auth\Events\Registered;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\LessonCancellationWeather;
+use App\Mail\LessonCancellationSick;
+use Carbon\Carbon;
 
 class InstructorController extends Controller
 {
@@ -217,5 +221,120 @@ class InstructorController extends Controller
             return back()->withInput()
                 ->withErrors(['error' => 'Er is iets misgegaan: ' . $e->getMessage()]);
         }
+    }
+
+    public function cancelLessonWeather(Customer $customer, Reservation $reservation)
+    {
+        $instructor = auth()->user()->instructor;
+        if (!$instructor->customers->contains($customer->id)) {
+            return redirect()->route('instructor.customers.index')
+                ->with('error', 'Je hebt geen toegang tot deze klant.');
+        }
+
+        try {
+            DB::transaction(function () use ($reservation, $instructor, $customer) {
+                // Send email before deleting
+                Mail::to($customer->user->email)
+                    ->send(new LessonCancellationWeather($reservation, $instructor));
+                
+                // Also send to instructor
+                Mail::to($instructor->user->email)
+                    ->send(new LessonCancellationWeather($reservation, $instructor));
+
+                // Delete any related records first (if needed)
+                if ($reservation->invoice) {
+                    $reservation->invoice->delete();
+                }
+
+                // Finally delete the reservation
+                $reservation->delete();
+            });
+
+            return back()->with('success', 'Les geannuleerd en e-mails verzonden.');
+        } catch (\Exception $e) {
+            return back()->withErrors(['error' => 'Er is iets misgegaan: ' . $e->getMessage()]);
+        }
+    }
+
+    public function cancelLessonSick(Customer $customer, Reservation $reservation)
+    {
+        $instructor = auth()->user()->instructor;
+        if (!$instructor->customers->contains($customer->id)) {
+            return redirect()->route('instructor.customers.index')
+                ->with('error', 'Je hebt geen toegang tot deze klant.');
+        }
+
+        try {
+            DB::transaction(function () use ($reservation, $instructor, $customer) {
+                // Send email before deleting
+                Mail::to($customer->user->email)
+                    ->send(new LessonCancellationSick($reservation, $instructor));
+                
+                // Also send to instructor
+                Mail::to($instructor->user->email)
+                    ->send(new LessonCancellationSick($reservation, $instructor));
+
+                // Delete any related records first (if needed)
+                if ($reservation->invoice) {
+                    $reservation->invoice->delete();
+                }
+
+                // Finally delete the reservation
+                $reservation->delete();
+            });
+
+            return back()->with('success', 'Les geannuleerd en e-mails verzonden.');
+        } catch (\Exception $e) {
+            return back()->withErrors(['error' => 'Er is iets misgegaan: ' . $e->getMessage()]);
+        }
+    }
+
+    public function scheduleDay()
+    {
+        $instructor = auth()->user()->instructor;
+        $date = request('date', now()->toDateString());
+        
+        $lessons = Reservation::whereIn('userId', $instructor->customers->pluck('userId'))
+            ->whereDate('reservationDate', $date)
+            ->with(['package', 'location', 'user.contact'])
+            ->orderBy('reservationTime')
+            ->get();
+
+        return view('instructors.schedule.day', compact('lessons', 'date'));
+    }
+
+    public function scheduleWeek()
+    {
+        $instructor = auth()->user()->instructor;
+        $startDate = request('date', now()->startOfWeek()->toDateString());
+        $endDate = Carbon::parse($startDate)->endOfWeek()->toDateString();
+        
+        $lessons = Reservation::whereIn('userId', $instructor->customers->pluck('userId'))
+            ->whereBetween('reservationDate', [$startDate, $endDate])
+            ->with(['package', 'location', 'user.contact'])
+            ->orderBy('reservationDate')
+            ->orderBy('reservationTime')
+            ->get()
+            ->groupBy('reservationDate');
+
+        return view('instructors.schedule.week', compact('lessons', 'startDate', 'endDate'));
+    }
+
+    public function scheduleMonth()
+    {
+        $instructor = auth()->user()->instructor;
+        $date = request('date', now()->startOfMonth()->toDateString());
+        $startDate = Carbon::parse($date)->startOfMonth();
+        $endDate = $startDate->copy()->endOfMonth();
+        
+        $lessons = Reservation::whereIn('userId', $instructor->customers->pluck('userId'))
+            ->whereBetween('reservationDate', [$startDate, $endDate])
+            ->with(['package', 'location', 'user.contact'])
+            ->orderBy('reservationDate')
+            ->orderBy('reservationTime')
+            ->get()
+            ->groupBy('reservationDate');
+
+        return view('instructors.schedule.month', compact('lessons', 'startDate', 'endDate'));
     }
 }

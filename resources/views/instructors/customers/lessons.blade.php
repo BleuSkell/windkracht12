@@ -46,9 +46,25 @@
                                             </td>
                                             <td class="px-4 py-2">
                                                 <a href="{{ route('instructor.customers.reservations.edit', [$customer, $lesson]) }}" 
-                                                   class="text-blue-600 hover:text-blue-800">
+                                                   class="text-blue-600 hover:text-blue-800 mr-2">
                                                     Reservering Bewerken
                                                 </a>
+                                                <form method="POST" action="{{ route('instructor.reservations.cancel-weather', [$customer, $lesson]) }}" 
+                                                      class="inline-block">
+                                                    @csrf
+                                                    <button type="submit" class="text-red-600 hover:text-red-800 mx-2"
+                                                            onclick="return confirm('Weet je zeker dat je deze les wilt annuleren wegens weer?')">
+                                                        Annuleren (Weer)
+                                                    </button>
+                                                </form>
+                                                <form method="POST" action="{{ route('instructor.reservations.cancel-sick', [$customer, $lesson]) }}" 
+                                                      class="inline-block">
+                                                    @csrf
+                                                    <button type="submit" class="text-red-600 hover:text-red-800 ml-2"
+                                                            onclick="return confirm('Weet je zeker dat je deze les wilt annuleren wegens ziekte?')">
+                                                        Annuleren (Ziek)
+                                                    </button>
+                                                </form>
                                             </td>
                                         </tr>
                                     @endforeach

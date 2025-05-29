@@ -34,4 +34,19 @@ Route::middleware(['auth', IsInstructor::class])->group(function () {
 
     Route::delete('/instructeur/klanten/{customer}', [InstructorController::class, 'customerDestroy'])
         ->name('instructor.customers.destroy');
+
+    Route::post('/instructeur/klanten/{customer}/reserveringen/{reservation}/cancel-weather', [InstructorController::class, 'cancelLessonWeather'])
+        ->name('instructor.reservations.cancel-weather');
+    
+    Route::post('/instructeur/klanten/{customer}/reserveringen/{reservation}/cancel-sick', [InstructorController::class, 'cancelLessonSick'])
+        ->name('instructor.reservations.cancel-sick');
+        
+    Route::get('/instructeur/rooster/dag', [InstructorController::class, 'scheduleDay'])
+        ->name('instructor.schedule.day');
+
+    Route::get('/instructeur/rooster/week', [InstructorController::class, 'scheduleWeek'])
+        ->name('instructor.schedule.week');
+        
+    Route::get('/instructeur/rooster/maand', [InstructorController::class, 'scheduleMonth'])
+        ->name('instructor.schedule.month');
 });
