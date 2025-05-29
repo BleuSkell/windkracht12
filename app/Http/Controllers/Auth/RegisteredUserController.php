@@ -56,6 +56,9 @@ class RegisteredUserController extends Controller
             'mobile' => '',
         ]);
 
+        // Create customer record
+        $user->customer()->create();
+
         event(new Registered($user));
 
         return redirect(route('verification.notice'));
