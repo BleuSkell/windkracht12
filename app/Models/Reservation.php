@@ -23,6 +23,10 @@ class Reservation extends Model
         'duoPartnerAddress',
         'duoPartnerCity',
         'duoPartnerPhone',
+        'cancellationReason',
+        'cancellationStatus',
+        'originalDate',
+        'originalTime'
     ];
 
     public function user()

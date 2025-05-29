@@ -20,6 +20,12 @@ Route::middleware(['auth', IsInstructor::class])->group(function () {
     Route::get('/instructeur/klanten/{customer}/lessen', [InstructorController::class, 'customerLessons'])
         ->name('instructor.customers.lessons');
 
+    Route::get('/instructeur/klanten/{customer}/reserveringen/{reservation}/edit', [InstructorController::class, 'reservationEdit'])
+        ->name('instructor.customers.reservations.edit');
+
+    Route::put('/instructeur/klanten/{customer}/reserveringen/{reservation}', [InstructorController::class, 'reservationUpdate'])
+        ->name('instructor.customers.reservations.update');
+
     Route::put('/instructeur/klanten/{customer}/lessen', [InstructorController::class, 'updateCustomerLessons'])
         ->name('instructor.customers.lessons.update');
 

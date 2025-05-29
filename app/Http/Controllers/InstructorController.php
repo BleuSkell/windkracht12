@@ -8,6 +8,8 @@ use App\Models\Contact;
 use App\Models\Customer;
 use App\Models\Instructor;
 use App\Models\Reservation;
+use App\Models\Package;
+use App\Models\Location;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -166,6 +168,54 @@ class InstructorController extends Controller
                 ->with('success', 'Klant succesvol ontkoppeld van jouw klantenlijst.');
         } catch (\Exception $e) {
             return back()->with('error', 'Er is iets misgegaan: ' . $e->getMessage());
+        }
+    }
+
+    public function reservationEdit(Customer $customer, Reservation $reservation)
+    {
+        $instructor = auth()->user()->instructor;
+        if (!$instructor->customers->contains($customer->id)) {
+            return redirect()->route('instructor.customers.index')
+                ->with('error', 'Je hebt geen toegang tot deze klant.');
+        }
+
+        $packages = Package::all();
+        $locations = Location::all();
+
+        return view('instructors.customers.reservations.edit', compact('customer', 'reservation', 'packages', 'locations'));
+    }
+
+    public function reservationUpdate(Request $request, Customer $customer, Reservation $reservation)
+    {
+        $instructor = auth()->user()->instructor;
+        if (!$instructor->customers->contains($customer->id)) {
+            return redirect()->route('instructor.customers.index')
+                ->with('error', 'Je hebt geen toegang tot deze klant.');
+        }
+
+        $updateData = [];
+        
+        if ($request->has('packageId')) {
+            $updateData['packageId'] = $request->packageId;
+        }
+        if ($request->has('locationId')) {
+            $updateData['locationId'] = $request->locationId;
+        }
+        if ($request->has('reservationDate')) {
+            $updateData['reservationDate'] = $request->reservationDate;
+        }
+        if ($request->has('reservationTime')) {
+            $updateData['reservationTime'] = $request->reservationTime;
+        }
+
+        try {
+            $reservation->update($updateData);
+
+            return redirect()->route('instructor.customers.lessons', $customer)
+                ->with('success', 'Reservering succesvol bijgewerkt.');
+        } catch (\Exception $e) {
+            return back()->withInput()
+                ->withErrors(['error' => 'Er is iets misgegaan: ' . $e->getMessage()]);
         }
     }
 }
