@@ -18,6 +18,8 @@ use Illuminate\Auth\Events\Registered;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\LessonCancellationWeather;
 use App\Mail\LessonCancellationSick;
+use App\Mail\LessonCancellationApproved;
+use App\Mail\LessonCancellationRejected;
 use Carbon\Carbon;
 
 class InstructorController extends Controller
@@ -336,5 +338,79 @@ class InstructorController extends Controller
             ->groupBy('reservationDate');
 
         return view('instructors.schedule.month', compact('lessons', 'startDate', 'endDate'));
+    }
+
+    public function approveCancellation(Customer $customer, Reservation $reservation)
+    {
+        $instructor = auth()->user()->instructor;
+        if (!$instructor->customers->contains($customer->id)) {
+            return redirect()->route('instructor.customers.index')
+                ->with('error', 'Je hebt geen toegang tot deze klant.');
+        }
+
+        try {
+            DB::transaction(function () use ($reservation, $instructor, $customer) {
+                // Send confirmation emails
+                Mail::to($customer->user->email)
+                    ->send(new LessonCancellationApproved($reservation));
+                
+                Mail::to($instructor->user->email)
+                    ->send(new LessonCancellationApproved($reservation));
+
+                // Delete related invoice if exists
+                if ($reservation->invoice) {
+                    $reservation->invoice->delete();
+                }
+
+                // Delete the reservation
+                $reservation->delete();
+            });
+
+            return back()->with('success', 'Annulering goedgekeurd en e-mails verzonden.');
+        } catch (\Exception $e) {
+            return back()->withErrors(['error' => 'Er is iets misgegaan: ' . $e->getMessage()]);
+        }
+    }
+
+    public function rejectCancellation(Customer $customer, Reservation $reservation)
+    {
+        $instructor = auth()->user()->instructor;
+        if (!$instructor->customers->contains($customer->id)) {
+            return redirect()->route('instructor.customers.index')
+                ->with('error', 'Je hebt geen toegang tot deze klant.');
+        }
+
+        try {
+            DB::transaction(function () use ($reservation, $customer) {
+                // Reset cancellation fields
+                $reservation->update([
+                    'cancellationStatus' => 'rejected',
+                    'cancellationReason' => null,
+                    'originalDate' => null,
+                    'originalTime' => null,
+                ]);
+
+                // Send rejection email
+                Mail::to($customer->user->email)
+                    ->send(new LessonCancellationRejected($reservation));
+            });
+
+            return back()->with('success', 'Annulering afgewezen en e-mail verzonden.');
+        } catch (\Exception $e) {
+            return back()->withErrors(['error' => 'Er is iets misgegaan: ' . $e->getMessage()]);
+        }
+    }
+
+    public function cancellationRequests()
+    {
+        $instructor = auth()->user()->instructor;
+        
+        $requests = Reservation::whereIn('userId', $instructor->customers->pluck('userId'))
+            ->where('cancellationStatus', 'pending')
+            ->with(['user.contact', 'package', 'location'])
+            ->orderBy('reservationDate')
+            ->get();
+
+        return view('instructors.cancellation-requests', compact('requests'));
     }
 }

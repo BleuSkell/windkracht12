@@ -49,4 +49,13 @@ Route::middleware(['auth', IsInstructor::class])->group(function () {
         
     Route::get('/instructeur/rooster/maand', [InstructorController::class, 'scheduleMonth'])
         ->name('instructor.schedule.month');
+
+    Route::post('/instructeur/klanten/{customer}/reserveringen/{reservation}/cancel-approve', [InstructorController::class, 'approveCancellation'])
+        ->name('instructor.reservations.cancel-approve');
+        
+    Route::post('/instructeur/klanten/{customer}/reserveringen/{reservation}/cancel-reject', [InstructorController::class, 'rejectCancellation'])
+        ->name('instructor.reservations.cancel-reject');
+
+    Route::get('/instructeur/annuleringen', [InstructorController::class, 'cancellationRequests'])
+        ->name('instructor.cancellation-requests');
 });

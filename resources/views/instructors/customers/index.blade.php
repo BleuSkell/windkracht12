@@ -4,10 +4,16 @@
             <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
                 {{ __('Mijn Klanten') }}
             </h2>
-            <a href="{{ route('instructor.customers.create') }}" 
-               class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                Nieuwe Klant
-            </a>
+            <div class="flex space-x-4">
+                <a href="{{ route('instructor.cancellation-requests') }}" 
+                   class="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded">
+                    Annuleringsverzoeken
+                </a>
+                <a href="{{ route('instructor.customers.create') }}" 
+                   class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                    Nieuwe Klant
+                </a>
+            </div>
         </div>
     </x-slot>
 

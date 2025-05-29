@@ -67,6 +67,32 @@
                                                 </form>
                                             </td>
                                         </tr>
+                                        <tr>
+                                            <td class="px-4 py-2" colspan="5">
+                                                @if($lesson->cancellationStatus === 'pending')
+                                                    <div class="space-y-2">
+                                                        <p class="text-yellow-600">Annuleringsverzoek:</p>
+                                                        <p class="text-sm">{{ $lesson->cancellationReason }}</p>
+                                                        <div class="flex space-x-2">
+                                                            <form method="POST" action="{{ route('instructor.reservations.cancel-approve', [$customer, $lesson]) }}" class="inline">
+                                                                @csrf
+                                                                <button type="submit" class="bg-green-500 hover:bg-green-700 text-white px-4 py-2 rounded text-sm"
+                                                                        onclick="return confirm('Weet je zeker dat je deze annulering wilt goedkeuren?')">
+                                                                    Goedkeuren
+                                                                </button>
+                                                            </form>
+                                                            <form method="POST" action="{{ route('instructor.reservations.cancel-reject', [$customer, $lesson]) }}" class="inline">
+                                                                @csrf
+                                                                <button type="submit" class="bg-red-500 hover:bg-red-700 text-white px-4 py-2 rounded text-sm"
+                                                                        onclick="return confirm('Weet je zeker dat je deze annulering wilt afwijzen?')">
+                                                                    Afwijzen
+                                                                </button>
+                                                            </form>
+                                                        </div>
+                                                    </div>
+                                                @endif
+                                            </td>
+                                        </tr>
                                     @endforeach
                                 </tbody>
                             </table>
