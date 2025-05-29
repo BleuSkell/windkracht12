@@ -22,66 +22,32 @@ class InstructorController extends Controller
             ->with(['user', 'user.contact', 'user.roles'])
             ->get();
 
-        return view('instructor.customers.index', compact('customers'));
+        return view('instructors.customers.index', compact('customers'));
     }
 
     public function customerCreate()
     {
-        return view('instructor.customers.create');
+        // Get customers that don't have any instructors
+        $availableCustomers = Customer::doesntHave('instructors')
+            ->with(['user.contact'])
+            ->get();
+
+        return view('instructors.customers.create', compact('availableCustomers'));
     }
 
     public function customerStore(Request $request)
     {
         $validated = $request->validate([
-            'email' => 'required|email|unique:users',
-            'firstName' => 'required|string|max:255',
-            'lastName' => 'required|string|max:255',
-            'address' => 'required|string|max:255',
-            'city' => 'required|string|max:255',
-            'dateOfBirth' => 'required|date',
-            'mobile' => 'required|string|max:255',
+            'customer_id' => 'required|exists:customers,id'
         ]);
 
-        DB::beginTransaction();
-
         try {
-            $customerRole = Role::where('roleName', 'customer')->first();
-
-            // Create user
-            $user = User::create([
-                'email' => $validated['email'],
-                'password' => Hash::make(Str::random(12)),
-                'roleId' => $customerRole->id,
-            ]);
-
-            // Create contact
-            Contact::create([
-                'userId' => $user->id,
-                'firstName' => $validated['firstName'],
-                'lastName' => $validated['lastName'],
-                'adress' => $validated['address'], // Note: DB column is 'adress'
-                'city' => $validated['city'],
-                'dateOfBirth' => $validated['dateOfBirth'],
-                'mobile' => $validated['mobile'],
-            ]);
-
-            // Create customer
-            $customer = Customer::create([
-                'userId' => $user->id,
-            ]);
-
-            // Link customer to instructor
             $instructor = auth()->user()->instructor;
-            $instructor->customers()->attach($customer->id);
-
-            DB::commit();
-
-            event(new Registered($user));
+            $instructor->customers()->attach($validated['customer_id']);
 
             return redirect()->route('instructor.customers.index')
-                ->with('success', 'Klant succesvol aangemaakt en gekoppeld.');
+                ->with('success', 'Klant succesvol gekoppeld.');
         } catch (\Exception $e) {
-            DB::rollback();
             return back()->withInput()->withErrors(['error' => 'Er is iets misgegaan: ' . $e->getMessage()]);
         }
     }
@@ -91,12 +57,12 @@ class InstructorController extends Controller
         // Check if customer belongs to instructor
         $instructor = auth()->user()->instructor;
         if (!$instructor->customers->contains($customer->id)) {
-            return redirect()->route('instructor.customers.index')
+            return redirect()->route('instructors.customers.index')
                 ->with('error', 'Je hebt geen toegang tot deze klant.');
         }
 
         $customer->load('user.contact');
-        return view('instructor.customers.edit', compact('customer'));
+        return view('instructors.customers.edit', compact('customer'));
     }
 
     public function customerUpdate(Request $request, Customer $customer)
@@ -104,7 +70,7 @@ class InstructorController extends Controller
         // Check if customer belongs to instructor
         $instructor = auth()->user()->instructor;
         if (!$instructor->customers->contains($customer->id)) {
-            return redirect()->route('instructor.customers.index')
+            return redirect()->route('instructors.customers.index')
                 ->with('error', 'Je hebt geen toegang tot deze klant.');
         }
 
@@ -133,7 +99,7 @@ class InstructorController extends Controller
             ]);
 
             DB::commit();
-            return redirect()->route('instructor.customers.index')
+            return redirect()->route('instructors.customers.index')
                 ->with('success', 'Klantgegevens succesvol bijgewerkt.');
         } catch (\Exception $e) {
             DB::rollback();
@@ -146,7 +112,7 @@ class InstructorController extends Controller
         // Check if customer belongs to instructor
         $instructor = auth()->user()->instructor;
         if (!$instructor->customers->contains($customer->id)) {
-            return redirect()->route('instructor.customers.index')
+            return redirect()->route('instructors.customers.index')
                 ->with('error', 'Je hebt geen toegang tot deze klant.');
         }
 
@@ -154,7 +120,7 @@ class InstructorController extends Controller
             // Only detach the customer from this instructor
             $instructor->customers()->detach($customer->id);
             
-            return redirect()->route('instructor.customers.index')
+            return redirect()->route('instructors.customers.index')
                 ->with('success', 'Klant succesvol ontkoppeld van jouw klantenlijst.');
         } catch (\Exception $e) {
             return back()->with('error', 'Er is iets misgegaan: ' . $e->getMessage());
