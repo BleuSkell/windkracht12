@@ -26,4 +26,12 @@ Route::middleware(['auth', IsOwner::class])->group(function () {
     Route::get('/klanten/{customer}/edit', [OwnerController::class, 'customerEdit'])->name('owner.customers.edit');
     Route::put('/klanten/{customer}', [OwnerController::class, 'customerUpdate'])->name('owner.customers.update');
     Route::delete('/klanten/{customer}', [OwnerController::class, 'customerDestroy'])->name('owner.customers.destroy');
+
+    // Instructor management routes
+    Route::get('/instructeurs', [OwnerController::class, 'instructorIndex'])->name('owner.instructors.index');
+    Route::get('/instructeurs/create', [OwnerController::class, 'instructorCreate'])->name('owner.instructors.create');
+    Route::post('/instructeurs', [OwnerController::class, 'instructorStore'])->name('owner.instructors.store');
+    Route::get('/instructeurs/{instructor}/edit', [OwnerController::class, 'instructorEdit'])->name('owner.instructors.edit');
+    Route::put('/instructeurs/{instructor}', [OwnerController::class, 'instructorUpdate'])->name('owner.instructors.update');
+    Route::delete('/instructeurs/{instructor}', [OwnerController::class, 'instructorDestroy'])->name('owner.instructors.destroy');
 });

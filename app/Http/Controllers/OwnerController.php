@@ -134,4 +134,122 @@ class OwnerController extends Controller
             return back()->with('error', 'Er is iets misgegaan: ' . $e->getMessage());
         }
     }
+
+    public function instructorIndex()
+    {
+        $instructors = Instructor::with(['user.contact', 'customers.user.contact'])->get();
+        return view('owner.instructors.index', compact('instructors'));
+    }
+
+    public function instructorCreate()
+    {
+        return view('owner.instructors.create');
+    }
+
+    public function instructorStore(Request $request)
+    {
+        $validated = $request->validate([
+            'email' => 'required|email|unique:users,email',
+            'firstName' => 'required|string|max:255',
+            'lastName' => 'required|string|max:255',
+            'adress' => 'required|string|max:255',
+            'city' => 'required|string|max:255',
+            'dateOfBirth' => 'required|date',
+            'mobile' => 'required|string|max:255',
+            'bsnNumber' => 'required|string|max:255|unique:contacts,bsnNumber'
+        ]);
+
+        try {
+            DB::transaction(function () use ($validated) {
+                $instructorRole = Role::where('roleName', 'instructor')->first();
+                
+                $user = User::create([
+                    'email' => $validated['email'],
+                    'roleId' => $instructorRole->id,
+                    'password' => ''
+                ]);
+
+                $user->contact()->create([
+                    'firstName' => $validated['firstName'],
+                    'lastName' => $validated['lastName'],
+                    'adress' => $validated['adress'],
+                    'city' => $validated['city'],
+                    'dateOfBirth' => $validated['dateOfBirth'],
+                    'mobile' => $validated['mobile'],
+                    'bsnNumber' => $validated['bsnNumber']
+                ]);
+
+                $user->instructor()->create();
+
+                event(new Registered($user));
+            });
+
+            return redirect()->route('owner.instructors.index')
+                ->with('success', 'Instructeur succesvol aangemaakt.');
+        } catch (\Exception $e) {
+            return back()->withInput()
+                ->withErrors(['error' => 'Er is iets misgegaan: ' . $e->getMessage()]);
+        }
+    }
+
+    public function instructorEdit(Instructor $instructor)
+    {
+        $instructor->load('user.contact');
+        return view('owner.instructors.edit', compact('instructor'));
+    }
+
+    public function instructorUpdate(Request $request, Instructor $instructor)
+    {
+        $validated = $request->validate([
+            'email' => 'required|email|unique:users,email,'.$instructor->user->id,
+            'firstName' => 'required|string|max:255',
+            'lastName' => 'required|string|max:255',
+            'adress' => 'required|string|max:255',
+            'city' => 'required|string|max:255',
+            'dateOfBirth' => 'required|date',
+            'mobile' => 'required|string|max:255',
+            'bsnNumber' => 'required|string|max:255|unique:contacts,bsnNumber,'.$instructor->user->contact->id
+        ]);
+
+        try {
+            DB::transaction(function () use ($instructor, $validated) {
+                $instructor->user->update(['email' => $validated['email']]);
+                
+                $instructor->user->contact->update([
+                    'firstName' => $validated['firstName'],
+                    'lastName' => $validated['lastName'],
+                    'adress' => $validated['adress'],
+                    'city' => $validated['city'],
+                    'dateOfBirth' => $validated['dateOfBirth'],
+                    'mobile' => $validated['mobile'],
+                    'bsnNumber' => $validated['bsnNumber']
+                ]);
+            });
+
+            return redirect()->route('owner.instructors.index')
+                ->with('success', 'Instructeurgegevens succesvol bijgewerkt.');
+        } catch (\Exception $e) {
+            return back()->withInput()
+                ->withErrors(['error' => 'Er is iets misgegaan: ' . $e->getMessage()]);
+        }
+    }
+
+    public function instructorDestroy(Instructor $instructor)
+    {
+        try {
+            DB::transaction(function () use ($instructor) {
+                // Remove instructor-customer relationships
+                $instructor->customers()->detach();
+                
+                // Delete related records
+                $instructor->user->contact()->delete();
+                $instructor->user->delete(); // This will cascade delete the instructor record
+            });
+
+            return redirect()->route('owner.instructors.index')
+                ->with('success', 'Instructeur succesvol verwijderd.');
+        } catch (\Exception $e) {
+            return back()->with('error', 'Er is iets misgegaan: ' . $e->getMessage());
+        }
+    }
 }
