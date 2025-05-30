@@ -6,11 +6,15 @@ use App\Models\User;
 use App\Models\Role;
 use App\Models\Customer;
 use App\Models\Instructor;
+use App\Models\Reservation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use Illuminate\Auth\Events\Registered;
+use App\Mail\LessonCancellationWeather;
+use App\Mail\LessonCancellationSick;
+use Illuminate\Support\Facades\Mail;
 
 class OwnerController extends Controller
 {
@@ -251,5 +255,80 @@ class OwnerController extends Controller
         } catch (\Exception $e) {
             return back()->with('error', 'Er is iets misgegaan: ' . $e->getMessage());
         }
+    }
+
+    public function cancelLessonWeather(Customer $customer, Reservation $reservation)
+    {
+        try {
+            DB::transaction(function () use ($reservation, $customer) {
+                // Get the instructor associated with this customer and reservation
+                $instructor = $customer->instructors->first();
+                
+                if ($instructor) {
+                    // Send email to customer
+                    Mail::to($customer->user->email)
+                        ->send(new LessonCancellationWeather($reservation, $instructor));
+                    
+                    // Send email to instructor
+                    Mail::to($instructor->user->email)
+                        ->send(new LessonCancellationWeather($reservation, $instructor));
+                }
+
+                // Delete invoice if it exists
+                if ($reservation->invoice) {
+                    $reservation->invoice->delete();
+                }
+
+                // Delete the reservation
+                $reservation->delete();
+            });
+
+            return back()->with('success', 'Les geannuleerd en e-mails verzonden.');
+        } catch (\Exception $e) {
+            return back()->withErrors(['error' => 'Er is iets misgegaan: ' . $e->getMessage()]);
+        }
+    }
+
+    public function cancelLessonSick(Customer $customer, Reservation $reservation)
+    {
+        try {
+            DB::transaction(function () use ($reservation, $customer) {
+                // Get the instructor associated with this customer and reservation
+                $instructor = $customer->instructors->first();
+                
+                if ($instructor) {
+                    // Send email to customer
+                    Mail::to($customer->user->email)
+                        ->send(new LessonCancellationSick($reservation, $instructor));
+                    
+                    // Send email to instructor
+                    Mail::to($instructor->user->email)
+                        ->send(new LessonCancellationSick($reservation, $instructor));
+                }
+
+                // Delete invoice if it exists
+                if ($reservation->invoice) {
+                    $reservation->invoice->delete();
+                }
+
+                // Delete the reservation
+                $reservation->delete();
+            });
+
+            return back()->with('success', 'Les geannuleerd en e-mails verzonden.');
+        } catch (\Exception $e) {
+            return back()->withErrors(['error' => 'Er is iets misgegaan: ' . $e->getMessage()]);
+        }
+    }
+
+    public function customerLessons(Customer $customer)
+    {
+        $customer->load(['user.contact', 'instructors.user.contact']);
+        $lessons = Reservation::where('userId', $customer->userId)
+            ->with(['package', 'location'])
+            ->orderBy('reservationDate', 'desc')
+            ->get();
+
+        return view('owner.customers.lessons', compact('customer', 'lessons'));
     }
 }

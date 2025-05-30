@@ -34,4 +34,14 @@ Route::middleware(['auth', IsOwner::class])->group(function () {
     Route::get('/instructeurs/{instructor}/edit', [OwnerController::class, 'instructorEdit'])->name('owner.instructors.edit');
     Route::put('/instructeurs/{instructor}', [OwnerController::class, 'instructorUpdate'])->name('owner.instructors.update');
     Route::delete('/instructeurs/{instructor}', [OwnerController::class, 'instructorDestroy'])->name('owner.instructors.destroy');
+
+    // Lesson cancellation routes
+    Route::post('/klanten/{customer}/reserveringen/{reservation}/cancel-weather', [OwnerController::class, 'cancelLessonWeather'])
+        ->name('owner.reservations.cancel-weather');
+    Route::post('/klanten/{customer}/reserveringen/{reservation}/cancel-sick', [OwnerController::class, 'cancelLessonSick'])
+        ->name('owner.reservations.cancel-sick');
+
+    // Customer lessons route
+    Route::get('/klanten/{customer}/lessen', [OwnerController::class, 'customerLessons'])
+        ->name('owner.customers.lessons');
 });
