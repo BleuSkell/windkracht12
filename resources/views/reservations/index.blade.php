@@ -75,7 +75,7 @@
                                             </button>
                                         </div>
                                     @elseif($reservation->cancellationStatus === 'pending')
-                                        <div class="mt-4 p-2 bg-yellow-100 rounded">
+                                        <div class="mt-4 mb-4 p-2 bg-yellow-100 rounded">
                                             <p class="text-yellow-700">Annuleringsverzoek in behandeling</p>
                                         </div>
                                     @elseif($reservation->cancellationStatus === 'approved')
@@ -89,22 +89,23 @@
 
                                     <!-- Cancel Modal -->
                                     <div id="cancelModal{{ $reservation->id }}" class="hidden fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full">
-                                        <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
+                                        <div class="relative top-20 mx-auto p-5 w-96 shadow-lg rounded-md bg-[#5b9fe3]">
                                             <form method="POST" action="{{ route('reservations.cancel', $reservation) }}">
                                                 @csrf
                                                 <h3 class="text-lg font-medium mb-4">Les annuleren</h3>
                                                 <div class="mb-4">
-                                                    <label for="reason" class="block text-sm font-medium text-gray-700">Reden voor annulering</label>
+                                                    <label for="reason" class="block text-sm font-medium text-white">Reden voor annulering</label>
                                                     <textarea name="reason" id="reason" rows="4" 
-                                                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" required></textarea>
+                                                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm text-[#0e1142]" required>
+                                                    </textarea>
                                                 </div>
                                                 <div class="flex justify-end space-x-2">
                                                     <button type="button" onclick="hideCancelModal({{ $reservation->id }})"
-                                                        class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">
+                                                        class="bg-white hover:bg-gray-300 text-[#0e1142] font-bold py-2 px-4 rounded">
                                                         Annuleren
                                                     </button>
                                                     <button type="submit"
-                                                        class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">
+                                                        class="bg-red-700 hover:bg-red-500 text-white font-bold py-2 px-4 rounded">
                                                         Bevestigen
                                                     </button>
                                                 </div>
