@@ -33,6 +33,18 @@
                             {{ __('Onbetaalde reserveringen') }}
                         </x-nav-link>
                     @endif
+
+                    @if(Auth::user()->roles->roleName === 'instructor')
+                        <x-nav-link :href="route('instructor.customers.index')" :active="request()->routeIs('instructor.customers.index')">
+                            {{ __('Klanten') }}
+                        </x-nav-link>
+                    @endif
+
+                    @if(Auth::user()->roles->roleName === 'customer')
+                        <x-nav-link :href="route('reservations.index')" :active="request()->routeIs('reservations.index')">
+                            {{ __('Reservering beheren') }}
+                        </x-nav-link>
+                    @endif
                 </div>
             </div>
 

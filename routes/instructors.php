@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Middleware\IsInstructor;
 
 Route::middleware(['auth', IsInstructor::class])->group(function () {
+    // Instructor Dashboard Routes
     Route::get('/instructeur/klanten', [InstructorController::class, 'customerIndex'])
         ->name('instructor.customers.index');
 
@@ -40,7 +41,8 @@ Route::middleware(['auth', IsInstructor::class])->group(function () {
     
     Route::post('/instructeur/klanten/{customer}/reserveringen/{reservation}/cancel-sick', [InstructorController::class, 'cancelLessonSick'])
         ->name('instructor.reservations.cancel-sick');
-        
+    
+    // Instructor Schedule Routes
     Route::get('/instructeur/rooster/dag', [InstructorController::class, 'scheduleDay'])
         ->name('instructor.schedule.day');
 
@@ -50,6 +52,7 @@ Route::middleware(['auth', IsInstructor::class])->group(function () {
     Route::get('/instructeur/rooster/maand', [InstructorController::class, 'scheduleMonth'])
         ->name('instructor.schedule.month');
 
+    // Instructor Reservation Routes
     Route::post('/instructeur/klanten/{customer}/reserveringen/{reservation}/cancel-approve', [InstructorController::class, 'approveCancellation'])
         ->name('instructor.reservations.cancel-approve');
         
