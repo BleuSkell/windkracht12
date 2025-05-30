@@ -5,7 +5,7 @@
                 {{ __('Klantenbeheer') }}
             </h2>
             <a href="{{ route('owner.customers.create') }}" 
-               class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+               class="bg-white text-[#0e1142] hover:bg-gray-300 transition-all duration-300 ease-in-out font-bold py-2 px-4 rounded">
                 Nieuwe Klant
             </a>
         </div>
@@ -19,19 +19,19 @@
                 </div>
             @endif
 
-            <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
+            <div class="bg-[#0e1142] overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900 dark:text-gray-100">
                     @if($customers->isEmpty())
                         <p class="text-center py-4">Er zijn nog geen klanten.</p>
                     @else
-                        <table class="min-w-full">
+                        <table class="min-w-full text-center">
                             <thead>
                                 <tr>
-                                    <th class="px-6 py-3 bg-gray-50 dark:bg-gray-700 text-left">Naam</th>
-                                    <th class="px-6 py-3 bg-gray-50 dark:bg-gray-700 text-left">Email</th>
-                                    <th class="px-6 py-3 bg-gray-50 dark:bg-gray-700 text-left">Adres</th>
-                                    <th class="px-6 py-3 bg-gray-50 dark:bg-gray-700 text-left">Instructeur(s)</th>
-                                    <th class="px-6 py-3 bg-gray-50 dark:bg-gray-700 text-right">Acties</th>
+                                    <th class="px-6 py-3 bg-[#5b9fe3] text-center">Naam</th>
+                                    <th class="px-6 py-3 bg-[#5b9fe3] text-center">Email</th>
+                                    <th class="px-6 py-3 bg-[#5b9fe3] text-center">Adres</th>
+                                    <th class="px-6 py-3 bg-[#5b9fe3] text-center">Instructeur(s)</th>
+                                    <th class="px-6 py-3 bg-[#5b9fe3] text-center">Acties</th>
                                 </tr>
                             </thead>
                             <tbody>

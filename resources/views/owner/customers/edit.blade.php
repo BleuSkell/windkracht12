@@ -17,7 +17,7 @@
                 </div>
             @endif
 
-            <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
+            <div class="bg-[#0e1142] overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900 dark:text-gray-100">
                     <form method="POST" action="{{ route('owner.customers.update', $customer) }}" class="space-y-6">
                         @csrf
@@ -74,7 +74,7 @@
 
                         <div>
                             <x-input-label for="instructors" value="Instructeurs" />
-                            <select name="instructors[]" id="instructors" multiple class="mt-1 block w-full rounded-md border-gray-300 dark:bg-gray-700 dark:text-gray-100" required>
+                            <select name="instructors[]" id="instructors" multiple class="mt-1 block w-full rounded-md bg-white text-[#0e1142]" required>
                                 @foreach($instructors as $instructor)
                                     <option value="{{ $instructor->id }}"
                                         {{ in_array($instructor->id, $customer->instructors->pluck('id')->toArray()) ? 'selected' : '' }}>

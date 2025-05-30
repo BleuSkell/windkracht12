@@ -19,25 +19,25 @@
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
+            <div class="bg-[#0e1142] overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900 dark:text-gray-100">
                     <form method="POST" action="{{ route('users.update', $user->id) }}">
                         @csrf
                         @method('PUT')
 
                         <div class="mb-4">
-                            <label for="email" class="block text-sm font-medium text-gray-700 dark:text-gray-300">E-mail</label>
+                            <x-input-label for="email" value="Email" />
                             <input id="email" name="email" type="email" value="{{ old('email', $user->email) }}" required
-                                   class="mt-1 block w-full rounded-md border-gray-300 dark:bg-gray-700 dark:text-gray-100 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+                                   class="bg-white w-full rounded-lg text-[#0e1142] mt-1">
                             @error('email')
                                 <span class="text-red-500 text-xs mt-1">{{ $message }}</span>
                             @enderror
                         </div>
 
                         <div class="mb-4">
-                            <label for="role" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Gebruikers rol</label>
+                            <x-input-label for="role" value="Gebruikersrol" />
                             <select id="role" name="role" required
-                                    class="mt-1 block w-full rounded-md border-gray-300 dark:bg-gray-700 dark:text-gray-100 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+                                    class="bg-white w-full rounded-lg text-[#0e1142] mt-1">
                                 @foreach($roles as $role)
                                     <option value="{{ $role->id }}"
                                         {{ (old('role', $user->roles->id ?? '') == $role->id) ? 'selected' : '' }}>
@@ -52,7 +52,7 @@
 
                         <div class="flex items-center justify-end">
                             <button type="submit"
-                                    class="inline-flex items-center px-4 py-2 bg-indigo-600 border border-transparent rounded-md font-semibold text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                                    class="inline-flex items-center px-4 py-2 bg-white text-[#0e1142] border border-transparent rounded-lg font-semibold text-xs uppercase tracking-widest hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#0e1142] transition ease-in-out duration-150">
                                 Wijzigingen opslaan
                             </button>
                         </div>

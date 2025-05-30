@@ -22,7 +22,7 @@
                 </div>
             @endif
 
-            <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
+            <div class="bg-[#0e1142] overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900 dark:text-gray-100">
                     @if($lessons->isEmpty())
                         <p class="text-center py-4">Deze klant heeft nog geen lessen.</p>

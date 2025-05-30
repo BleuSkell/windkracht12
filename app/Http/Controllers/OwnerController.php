@@ -18,6 +18,7 @@ use App\Mail\LessonCancellationSick;
 use App\Mail\ReservationConfirmed;
 use Illuminate\Support\Facades\Mail;
 use Carbon\Carbon;
+use App\Models\Lesson;
 
 class OwnerController extends Controller
 {
@@ -375,4 +376,60 @@ class OwnerController extends Controller
 
         return view('owner.unpaid-invoices', compact('unpaidInvoices'));
     }
+
+    public function instructorScheduleDay(Instructor $instructor, Request $request)
+    {
+        $date = $request->date ? Carbon::parse($request->date) : now();
+        $lessons = Reservation::whereHas('user.customer.instructors', function($query) use ($instructor) {
+                $query->where('instructors.id', $instructor->id);
+            })
+            ->whereDate('reservationDate', $date)
+            ->get();
+
+        return view('owner.instructors.schedule.day', [
+            'instructor' => $instructor,
+            'date' => $date,
+            'lessons' => $lessons
+        ]);
+    }
+
+    public function instructorScheduleWeek(Instructor $instructor, Request $request)
+    {
+        $startDate = $request->date ? Carbon::parse($request->date) : now()->startOfWeek();
+        $endDate = $startDate->copy()->endOfWeek();
+        
+        $lessons = Reservation::whereHas('user.customer.instructors', function($query) use ($instructor) {
+                $query->where('instructors.id', $instructor->id);
+            })
+            ->whereBetween('reservationDate', [$startDate, $endDate])
+            ->get()
+            ->groupBy('reservationDate');
+
+        return view('owner.instructors.schedule.week', [
+            'instructor' => $instructor,
+            'startDate' => $startDate,
+            'lessons' => $lessons
+        ]);
+    }
+
+    public function instructorScheduleMonth(Instructor $instructor, Request $request)
+    {
+        $startDate = $request->date ? Carbon::parse($request->date)->startOfMonth() : now()->startOfMonth();
+        $endDate = $startDate->copy()->endOfMonth();
+        
+        $lessons = Reservation::whereHas('user.customer.instructors', function($query) use ($instructor) {
+                $query->where('instructors.id', $instructor->id);
+            })
+            ->whereBetween('reservationDate', [$startDate, $endDate])
+            ->get()
+            ->groupBy('reservationDate');
+
+        return view('owner.instructors.schedule.month', [
+            'instructor' => $instructor,
+            'startDate' => $startDate,
+            'lessons' => $lessons
+        ]);
+    }
+
+    
 }
