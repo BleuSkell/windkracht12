@@ -55,11 +55,11 @@
                                         </td>
                                         <td class="px-6 py-4 text-right">
                                             <a href="{{ route('owner.customers.lessons', $customer) }}" 
-                                               class="text-blue-600 hover:text-blue-900 mr-3">
+                                               class="text-blue-500 hover:text-blue-700 mr-2">
                                                 Lessen
                                             </a>
                                             <a href="{{ route('owner.customers.edit', $customer) }}" 
-                                               class="text-blue-600 hover:text-blue-900 mr-3">
+                                               class="text-blue-500 hover:text-blue-700 mr-2">
                                                 Bewerken
                                             </a>
                                             <form class="inline-block" method="POST" 

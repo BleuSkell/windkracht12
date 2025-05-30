@@ -43,6 +43,22 @@
                                             </td>
                                             <td class="px-4 py-2">{{ $lesson->package->name }}</td>
                                             <td class="px-4 py-2">{{ $lesson->location->name }}</td>
+                                            <td class="px-4 py-2">
+                                                <p class="font-bold">{{ \Carbon\Carbon::parse($lesson->reservationTime)->format('H:i') }}</p>
+                                                <p>{{ $lesson->user->contact->firstName }} {{ $lesson->user->contact->lastName }}</p>
+                                                <p class="text-sm">{{ $lesson->package->name }}</p>
+                                                <p class="text-sm">{{ $lesson->location->name }}</p>
+                                                <p class="text-xs mt-1">
+                                                    <span class="px-2 py-1 rounded-full
+                                                        @if($lesson->status === 'confirmed') 
+                                                            bg-green-100 text-green-800
+                                                        @else
+                                                            bg-gray-100 text-gray-800
+                                                        @endif">
+                                                        {{ $lesson->status === 'confirmed' ? 'Definitief' : 'Voorlopig' }}
+                                                    </span>
+                                                </p>
+                                            </td>
                                         </tr>
                                     @endforeach
                                 </tbody>

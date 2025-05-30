@@ -48,7 +48,19 @@
                                                     Niet betaald
                                                 </span>
                                             </td>
-                                            <td class="px-4 py-2 text-right">
+                                            <td class="px-4 py-2 text-right space-x-2">
+                                                @if($invoice->status === 'paid' && $invoice->reservation->status !== 'confirmed')
+                                                    <form method="POST" 
+                                                          action="{{ route('owner.reservations.confirm', $invoice->reservation) }}"
+                                                          class="inline-block">
+                                                        @csrf
+                                                        <button type="submit" 
+                                                                class="bg-green-500 hover:bg-green-700 text-white font-bold py-1 px-3 rounded text-sm"
+                                                                onclick="return confirm('Weet je zeker dat je deze reservering definitief wilt maken?')">
+                                                            Definitief maken
+                                                        </button>
+                                                    </form>
+                                                @endif
                                                 <a href="{{ route('owner.customers.lessons', $invoice->reservation->user->customer) }}" 
                                                    class="text-blue-600 hover:text-blue-900">
                                                     Bekijk Reservering

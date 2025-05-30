@@ -15,6 +15,7 @@ use Illuminate\Support\Str;
 use Illuminate\Auth\Events\Registered;
 use App\Mail\LessonCancellationWeather;
 use App\Mail\LessonCancellationSick;
+use App\Mail\ReservationConfirmed;
 use Illuminate\Support\Facades\Mail;
 use Carbon\Carbon;
 
@@ -301,10 +302,7 @@ class OwnerController extends Controller
                 if ($instructor) {
                     // Send email to customer
                     Mail::to($customer->user->email)
-                        ->send(new LessonCancellationSick($reservation, $instructor));
-                    
-                    // Send email to instructor
-                    Mail::to($instructor->user->email)
+                        ->send(new LessonCancellationSick($reservation, $instructor))
                         ->send(new LessonCancellationSick($reservation, $instructor));
                 }
 
@@ -327,66 +325,44 @@ class OwnerController extends Controller
     {
         $customer->load(['user.contact', 'instructors.user.contact']);
         $lessons = Reservation::where('userId', $customer->userId)
-            ->with(['package', 'location'])
+            ->with(['package', 'location', 'invoice'])
             ->orderBy('reservationDate', 'desc')
             ->get();
 
         return view('owner.customers.lessons', compact('customer', 'lessons'));
     }
 
-    public function instructorScheduleDay(Instructor $instructor)
+    public function confirmReservation(Reservation $reservation)
     {
-        $date = request('date', now()->toDateString());
-        
-        $lessons = Reservation::whereIn('userId', $instructor->customers->pluck('userId'))
-            ->whereDate('reservationDate', $date)
-            ->with(['package', 'location', 'user.contact'])
-            ->orderBy('reservationTime')
-            ->get();
+        try {
+            DB::transaction(function () use ($reservation) {
+                // Update reservation status
+                $reservation->update([
+                    'status' => 'confirmed',
+                    'confirmedAt' => now()
+                ]);
 
-        return view('owner.instructors.schedule.day', compact('instructor', 'lessons', 'date'));
-    }
+                // Get the instructor associated with this customer
+                $instructor = $reservation->user->customer->instructors->first();
 
-    public function instructorScheduleWeek(Instructor $instructor)
-    {
-        $startDate = request('date', now()->startOfWeek()->toDateString());
-        $endDate = Carbon::parse($startDate)->endOfWeek()->toDateString();
-        
-        $lessons = Reservation::whereIn('userId', $instructor->customers->pluck('userId'))
-            ->whereBetween('reservationDate', [$startDate, $endDate])
-            ->with(['package', 'location', 'user.contact'])
-            ->orderBy('reservationDate')
-            ->orderBy('reservationTime')
-            ->get()
-            ->groupBy('reservationDate');
+                // Send confirmation emails
+                Mail::to($reservation->user->email)
+                    ->send(new ReservationConfirmed($reservation));
 
-        return view('owner.instructors.schedule.week', compact('instructor', 'lessons', 'startDate'));
-    }
+                if ($instructor) {
+                    Mail::to($instructor->user->email)
+                        ->send(new ReservationConfirmed($reservation));
+                }
 
-    public function instructorScheduleMonth(Instructor $instructor)
-    {
-        $date = request('date', now()->startOfMonth()->toDateString());
-        $startDate = Carbon::parse($date)->startOfMonth();
-        $endDate = $startDate->copy()->endOfMonth();
-        
-        $lessons = Reservation::whereIn('userId', $instructor->customers->pluck('userId'))
-            ->whereBetween('reservationDate', [$startDate, $endDate])
-            ->with(['package', 'location', 'user.contact'])
-            ->orderBy('reservationDate')
-            ->orderBy('reservationTime')
-            ->get()
-            ->groupBy('reservationDate');
+                if ($reservation->duoPartnerEmail) {
+                    Mail::to($reservation->duoPartnerEmail)
+                        ->send(new ReservationConfirmed($reservation));
+                }
+            });
 
-        return view('owner.instructors.schedule.month', compact('instructor', 'lessons', 'startDate'));
-    }
-
-    public function unpaidInvoices()
-    {
-        $unpaidInvoices = Invoice::where('status', 'unpaid')
-            ->with(['reservation.user.contact', 'reservation.package'])
-            ->orderBy('dueDate')
-            ->get();
-
-        return view('owner.unpaid-invoices', compact('unpaidInvoices'));
+            return back()->with('success', 'Reservering is definitief bevestigd en bevestigingsmails zijn verzonden.');
+        } catch (\Exception $e) {
+            return back()->withErrors(['error' => 'Er is iets misgegaan: ' . $e->getMessage()]);
+        }
     }
 }

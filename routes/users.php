@@ -55,4 +55,8 @@ Route::middleware(['auth', IsOwner::class])->group(function () {
 
     // Unpaid invoices route
     Route::get('/betalingen', [OwnerController::class, 'unpaidInvoices'])->name('owner.unpaid-invoices');
+
+    // Reservation confirmation route
+    Route::post('/reserveringen/{reservation}/confirm', [OwnerController::class, 'confirmReservation'])
+        ->name('owner.reservations.confirm');
 });

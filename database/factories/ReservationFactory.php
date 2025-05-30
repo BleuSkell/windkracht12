@@ -36,6 +36,7 @@ class ReservationFactory extends Factory
             'cancellationStatus' => null,
             'originalDate' => null,
             'originalTime' => null,
+            'status' => 'pending',
         ];
     }
 }

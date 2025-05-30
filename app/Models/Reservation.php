@@ -26,7 +26,8 @@ class Reservation extends Model
         'cancellationReason',
         'cancellationStatus',
         'originalDate',
-        'originalTime'
+        'originalTime',
+        'status',
     ];
 
     public function user()

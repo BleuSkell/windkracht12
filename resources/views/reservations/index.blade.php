@@ -37,6 +37,24 @@
                                             {{ \Carbon\Carbon::parse($reservation->reservationTime)->format('H:i') }}
                                         </p>
                                         <p><span class="font-semibold">Aantal lessen:</span> {{ $reservation->package->numberOfLessons }}</p>
+                                        <p><span class="font-semibold">Status:</span>
+                                            <span class="px-2 py-1 rounded-full text-xs
+                                                @if($reservation->status === 'confirmed') 
+                                                    bg-green-100 text-green-800
+                                                @elseif($reservation->invoice && $reservation->invoice->status === 'paid')
+                                                    bg-yellow-100 text-yellow-800
+                                                @else
+                                                    bg-gray-100 text-gray-800
+                                                @endif">
+                                                @if($reservation->status === 'confirmed')
+                                                    Definitief
+                                                @elseif($reservation->invoice && $reservation->invoice->status === 'paid')
+                                                    Betaald
+                                                @else
+                                                    Voorlopig
+                                                @endif
+                                            </span>
+                                        </p>
                                     </div>
 
                                     @if($reservation->package->isDuo)

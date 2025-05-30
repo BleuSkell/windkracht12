@@ -35,6 +35,7 @@
                                         <th class="px-4 py-2">Tijd</th>
                                         <th class="px-4 py-2">Pakket</th>
                                         <th class="px-4 py-2">Locatie</th>
+                                        <th class="px-4 py-2">Status</th>
                                         <th class="px-4 py-2">Acties</th>
                                     </tr>
                                 </thead>
@@ -53,7 +54,37 @@
                                             <td class="px-4 py-2">
                                                 {{ $lesson->location->name }}
                                             </td>
+                                            <td class="px-4 py-2">
+                                                <span class="px-2 py-1 rounded-full text-xs
+                                                    @if($lesson->status === 'confirmed') 
+                                                        bg-green-100 text-green-800
+                                                    @elseif($lesson->invoice && $lesson->invoice->status === 'paid')
+                                                        bg-yellow-100 text-yellow-800
+                                                    @else
+                                                        bg-gray-100 text-gray-800
+                                                    @endif">
+                                                    @if($lesson->status === 'confirmed')
+                                                        Definitief
+                                                    @elseif($lesson->invoice && $lesson->invoice->status === 'paid')
+                                                        Betaald - Wacht op bevestiging
+                                                    @else
+                                                        Voorlopig
+                                                    @endif
+                                                </span>
+                                            </td>
                                             <td class="px-4 py-2 space-x-2">
+                                                @if($lesson->invoice && $lesson->invoice->status === 'paid' && $lesson->status !== 'confirmed')
+                                                    <form method="POST" 
+                                                          action="{{ route('owner.reservations.confirm', $lesson) }}"
+                                                          class="inline-block">
+                                                        @csrf
+                                                        <button type="submit" 
+                                                                class="bg-green-500 hover:bg-green-700 text-white font-bold py-1 px-3 rounded text-sm"
+                                                                onclick="return confirm('Weet je zeker dat je deze reservering definitief wilt maken?')">
+                                                            Definitief maken
+                                                        </button>
+                                                    </form>
+                                                @endif
                                                 <form method="POST" 
                                                       action="{{ route('owner.reservations.cancel-weather', [$customer, $lesson]) }}"
                                                       class="inline-block">

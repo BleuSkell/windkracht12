@@ -24,6 +24,7 @@ return new class extends Migration
             $table->enum('cancellationStatus', ['pending', 'approved', 'rejected'])->nullable();
             $table->date('originalDate')->nullable();
             $table->time('originalTime')->nullable();
+            $table->string('status')->default('pending');
             $table->timestamps();
         });
     }
