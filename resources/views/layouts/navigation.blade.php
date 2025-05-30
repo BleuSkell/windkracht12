@@ -17,8 +17,20 @@
                     </x-nav-link>
 
                     @if(Auth::user()->roles->roleName === 'owner')
+                        <x-nav-link :href="route('users.index')" :active="request()->routeIs('users.index')">
+                            {{ __('Gebruikers') }}
+                        </x-nav-link>
+
+                        <x-nav-link :href="route('owner.customers.index')" :active="request()->routeIs('owner.customers.index')">
+                            {{ __('Klanten') }}
+                        </x-nav-link>
+
+                        <x-nav-link :href="route('owner.instructors.index')" :active="request()->routeIs('owner.instructors.index')">
+                            {{ __('Instructeurs') }}
+                        </x-nav-link>
+
                         <x-nav-link :href="route('owner.unpaid-invoices')" :active="request()->routeIs('owner.unpaid-invoices')">
-                            {{ __('Openstaande Betalingen') }}
+                            {{ __('Onbetaalde reserveringen') }}
                         </x-nav-link>
                     @endif
                 </div>

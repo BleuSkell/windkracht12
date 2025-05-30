@@ -365,4 +365,14 @@ class OwnerController extends Controller
             return back()->withErrors(['error' => 'Er is iets misgegaan: ' . $e->getMessage()]);
         }
     }
+
+    public function unpaidInvoices()
+    {
+        $unpaidInvoices = Invoice::where('status', 'unpaid')
+            ->with(['reservation.user.contact', 'reservation.package'])
+            ->orderBy('dueDate')
+            ->get();
+
+        return view('owner.unpaid-invoices', compact('unpaidInvoices'));
+    }
 }
