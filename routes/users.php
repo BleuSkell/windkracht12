@@ -44,4 +44,12 @@ Route::middleware(['auth', IsOwner::class])->group(function () {
     // Customer lessons route
     Route::get('/klanten/{customer}/lessen', [OwnerController::class, 'customerLessons'])
         ->name('owner.customers.lessons');
+
+    // Instructor schedule routes
+    Route::get('/instructeurs/{instructor}/rooster/dag', [OwnerController::class, 'instructorScheduleDay'])
+        ->name('owner.instructors.schedule.day');
+    Route::get('/instructeurs/{instructor}/rooster/week', [OwnerController::class, 'instructorScheduleWeek'])
+        ->name('owner.instructors.schedule.week');
+    Route::get('/instructeurs/{instructor}/rooster/maand', [OwnerController::class, 'instructorScheduleMonth'])
+        ->name('owner.instructors.schedule.month');
 });

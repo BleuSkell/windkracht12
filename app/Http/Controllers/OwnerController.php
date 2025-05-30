@@ -15,6 +15,7 @@ use Illuminate\Auth\Events\Registered;
 use App\Mail\LessonCancellationWeather;
 use App\Mail\LessonCancellationSick;
 use Illuminate\Support\Facades\Mail;
+use Carbon\Carbon;
 
 class OwnerController extends Controller
 {
@@ -330,5 +331,51 @@ class OwnerController extends Controller
             ->get();
 
         return view('owner.customers.lessons', compact('customer', 'lessons'));
+    }
+
+    public function instructorScheduleDay(Instructor $instructor)
+    {
+        $date = request('date', now()->toDateString());
+        
+        $lessons = Reservation::whereIn('userId', $instructor->customers->pluck('userId'))
+            ->whereDate('reservationDate', $date)
+            ->with(['package', 'location', 'user.contact'])
+            ->orderBy('reservationTime')
+            ->get();
+
+        return view('owner.instructors.schedule.day', compact('instructor', 'lessons', 'date'));
+    }
+
+    public function instructorScheduleWeek(Instructor $instructor)
+    {
+        $startDate = request('date', now()->startOfWeek()->toDateString());
+        $endDate = Carbon::parse($startDate)->endOfWeek()->toDateString();
+        
+        $lessons = Reservation::whereIn('userId', $instructor->customers->pluck('userId'))
+            ->whereBetween('reservationDate', [$startDate, $endDate])
+            ->with(['package', 'location', 'user.contact'])
+            ->orderBy('reservationDate')
+            ->orderBy('reservationTime')
+            ->get()
+            ->groupBy('reservationDate');
+
+        return view('owner.instructors.schedule.week', compact('instructor', 'lessons', 'startDate'));
+    }
+
+    public function instructorScheduleMonth(Instructor $instructor)
+    {
+        $date = request('date', now()->startOfMonth()->toDateString());
+        $startDate = Carbon::parse($date)->startOfMonth();
+        $endDate = $startDate->copy()->endOfMonth();
+        
+        $lessons = Reservation::whereIn('userId', $instructor->customers->pluck('userId'))
+            ->whereBetween('reservationDate', [$startDate, $endDate])
+            ->with(['package', 'location', 'user.contact'])
+            ->orderBy('reservationDate')
+            ->orderBy('reservationTime')
+            ->get()
+            ->groupBy('reservationDate');
+
+        return view('owner.instructors.schedule.month', compact('instructor', 'lessons', 'startDate'));
     }
 }
