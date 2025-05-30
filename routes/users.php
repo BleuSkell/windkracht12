@@ -52,4 +52,7 @@ Route::middleware(['auth', IsOwner::class])->group(function () {
         ->name('owner.instructors.schedule.week');
     Route::get('/instructeurs/{instructor}/rooster/maand', [OwnerController::class, 'instructorScheduleMonth'])
         ->name('owner.instructors.schedule.month');
+
+    // Unpaid invoices route
+    Route::get('/betalingen', [OwnerController::class, 'unpaidInvoices'])->name('owner.unpaid-invoices');
 });

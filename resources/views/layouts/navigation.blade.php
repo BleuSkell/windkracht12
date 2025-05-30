@@ -15,6 +15,12 @@
                     <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                         {{ __('Dashboard') }}
                     </x-nav-link>
+
+                    @if(Auth::user()->roles->roleName === 'owner')
+                        <x-nav-link :href="route('owner.unpaid-invoices')" :active="request()->routeIs('owner.unpaid-invoices')">
+                            {{ __('Openstaande Betalingen') }}
+                        </x-nav-link>
+                    @endif
                 </div>
             </div>
 
@@ -76,6 +82,12 @@
             <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                 {{ __('Dashboard') }}
             </x-responsive-nav-link>
+
+            @if(Auth::user()->roles->roleName === 'owner')
+                <x-responsive-nav-link :href="route('owner.unpaid-invoices')" :active="request()->routeIs('owner.unpaid-invoices')">
+                    {{ __('Openstaande Betalingen') }}
+                </x-responsive-nav-link>
+            @endif
         </div>
 
         <!-- Responsive Settings Options -->

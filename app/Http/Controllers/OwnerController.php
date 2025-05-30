@@ -7,6 +7,7 @@ use App\Models\Role;
 use App\Models\Customer;
 use App\Models\Instructor;
 use App\Models\Reservation;
+use App\Models\Invoice;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -377,5 +378,15 @@ class OwnerController extends Controller
             ->groupBy('reservationDate');
 
         return view('owner.instructors.schedule.month', compact('instructor', 'lessons', 'startDate'));
+    }
+
+    public function unpaidInvoices()
+    {
+        $unpaidInvoices = Invoice::where('status', 'unpaid')
+            ->with(['reservation.user.contact', 'reservation.package'])
+            ->orderBy('dueDate')
+            ->get();
+
+        return view('owner.unpaid-invoices', compact('unpaidInvoices'));
     }
 }
