@@ -20,26 +20,71 @@
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-[#0e1142] overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 text-gray-900 dark:text-gray-100">
-                    <div class="grid grid-cols-7 gap-4">
-                        @foreach($lessons->sortKeys() as $date => $dayLessons)
-                            <div class="border p-4 rounded">
-                                <h3 class="font-bold mb-2">{{ \Carbon\Carbon::parse($date)->format('D d M') }}</h3>
+                <div class="p-6 text-white">
+                    <!-- Week Header -->
+                    <div class="grid grid-cols-7 gap-4 mb-4">
+                        @php
+                            $currentDate = \Carbon\Carbon::parse($startDate);
+                        @endphp
+                        @for($i = 0; $i < 7; $i++)
+                            <div class="text-center font-bold p-2 bg-[#5b9fe3] rounded-t">
+                                <div>{{ $currentDate->format('D') }}</div>
+                                <div>{{ $currentDate->format('d M') }}</div>
+                            </div>
+                            @php
+                                $currentDate->addDay();
+                            @endphp
+                        @endfor
+                    </div>
+
+                    <!-- Week Grid -->
+                    <div class="grid grid-cols-7 gap-4 min-h-[600px]">
+                        @php
+                            $currentDate = \Carbon\Carbon::parse($startDate);
+                        @endphp
+                        @for($i = 0; $i < 7; $i++)
+                            <div class="border border-[#5b9fe3] rounded-b p-4 bg-white/10">
+                                @php
+                                    $dayLessons = $lessons->get($currentDate->format('Y-m-d'), collect());
+                                @endphp
+                                
                                 @if($dayLessons->isEmpty())
-                                    <p class="text-sm text-gray-500">Geen lessen</p>
+                                    <p class="text-sm text-gray-300">Geen lessen</p>
                                 @else
                                     @foreach($dayLessons->sortBy('reservationTime') as $lesson)
-                                        <div class="mb-2 p-2 bg-gray-100 dark:bg-gray-700 rounded">
-                                            <p class="font-bold">{{ \Carbon\Carbon::parse($lesson->reservationTime)->format('H:i') }}</p>
-                                            <p>{{ $lesson->user->contact->firstName }} {{ $lesson->user->contact->lastName }}</p>
-                                            <p class="text-sm">{{ $lesson->package->name }}</p>
-                                            <p class="text-sm">{{ $lesson->location->name }}</p>
+                                        <div class="mb-3 p-3 bg-white/10 rounded hover:bg-[#5b9fe3]/20 transition-colors">
+                                            <p class="font-bold text-[#5b9fe3]">
+                                                {{ \Carbon\Carbon::parse($lesson->reservationTime)->format('H:i') }}
+                                            </p>
+                                            <p class="text-sm font-semibold mb-1">
+                                                {{ $lesson->user->contact->firstName }} 
+                                                {{ $lesson->user->contact->lastName }}
+                                            </p>
+                                            <p class="text-xs text-gray-300">{{ $lesson->package->name }}</p>
+                                            <p class="text-xs text-gray-300">{{ $lesson->location->name }}</p>
+                                            <div class="mt-2">
+                                                <span class="text-xs px-2 py-1 rounded-full 
+                                                    {{ $lesson->status === 'confirmed' ? 'bg-green-500/20 text-green-300' : 'bg-gray-500/20 text-gray-300' }}">
+                                                    {{ $lesson->status === 'confirmed' ? 'Definitief' : 'Voorlopig' }}
+                                                </span>
+                                            </div>
                                         </div>
                                     @endforeach
                                 @endif
+                                @php
+                                    $currentDate->addDay();
+                                @endphp
                             </div>
-                        @endforeach
+                        @endfor
                     </div>
+                </div>
+
+                <div class="flex items-center justify-end mb-4">
+                    <a href="{{  route('dashboard') }}">
+                        <x-secondary-button class="mr-3">
+                            Terug naar dashboard
+                        </x-secondary-button>
+                    </a>
                 </div>
             </div>
         </div>
