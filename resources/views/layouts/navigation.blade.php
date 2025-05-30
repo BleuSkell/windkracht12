@@ -12,81 +12,106 @@
 
                 <!-- Navigation Links -->
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                    <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
-                        {{ __('Dashboard') }}
-                    </x-nav-link>
-
-                    @if(Auth::user()->roles->roleName === 'owner')
-                        <x-nav-link :href="route('users.index')" :active="request()->routeIs('users.index')">
-                            {{ __('Gebruikers') }}
+                    @if (Auth::user())
+                        <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
+                            {{ __('Dashboard') }}
                         </x-nav-link>
+                    
+                        @if(Auth::user()->roles->roleName === 'owner')
+                            <x-nav-link :href="route('users.index')" :active="request()->routeIs('users.index')">
+                                {{ __('Gebruikers') }}
+                            </x-nav-link>
 
-                        <x-nav-link :href="route('owner.customers.index')" :active="request()->routeIs('owner.customers.index')">
-                            {{ __('Klanten') }}
-                        </x-nav-link>
+                            <x-nav-link :href="route('owner.customers.index')" :active="request()->routeIs('owner.customers.index')">
+                                {{ __('Klanten') }}
+                            </x-nav-link>
 
-                        <x-nav-link :href="route('owner.instructors.index')" :active="request()->routeIs('owner.instructors.index')">
-                            {{ __('Instructeurs') }}
-                        </x-nav-link>
+                            <x-nav-link :href="route('owner.instructors.index')" :active="request()->routeIs('owner.instructors.index')">
+                                {{ __('Instructeurs') }}
+                            </x-nav-link>
 
-                        <x-nav-link :href="route('owner.unpaid-invoices')" :active="request()->routeIs('owner.unpaid-invoices')">
-                            {{ __('Onbetaalde reserveringen') }}
-                        </x-nav-link>
-                    @endif
+                            <x-nav-link :href="route('owner.unpaid-invoices')" :active="request()->routeIs('owner.unpaid-invoices')">
+                                {{ __('Onbetaalde reserveringen') }}
+                            </x-nav-link>
+                        @endif
 
-                    @if(Auth::user()->roles->roleName === 'instructor')
-                        <x-nav-link :href="route('instructor.customers.index')" :active="request()->routeIs('instructor.customers.index')">
-                            {{ __('Klanten') }}
-                        </x-nav-link>
-                    @endif
+                        @if(Auth::user()->roles->roleName === 'instructor')
+                            <x-nav-link :href="route('instructor.customers.index')" :active="request()->routeIs('instructor.customers.index')">
+                                {{ __('Klanten') }}
+                            </x-nav-link>
+                        @endif
 
-                    @if(Auth::user()->roles->roleName === 'customer')
-                        <x-nav-link :href="route('reservations.index')" :active="request()->routeIs('reservations.index')">
-                            {{ __('Reservering beheren') }}
+                        @if(Auth::user()->roles->roleName === 'customer')
+                            <x-nav-link :href="route('reservations.index')" :active="request()->routeIs('reservations.index')">
+                                {{ __('Reservering beheren') }}
+                            </x-nav-link>
+                        @endif
+                    @else
+                        <x-nav-link :href="route('home')" :active="request()->routeIs('home')">
+                            {{ __('Home') }}
                         </x-nav-link>
                     @endif
                 </div>
             </div>
 
-            <!-- Settings Dropdown -->
-            <div class="hidden sm:flex sm:items-center sm:ms-6">
-                <x-dropdown align="right" width="48">
-                    <x-slot name="trigger">
-                        <button class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-white bg-[#5b9fe3] hover:text-gray-700 focus:outline-none transition ease-in-out duration-150">
-                            <div>
-                                @if (isset(Auth::user()->contact->firstName))
-                                    {{ Auth::user()->contact->firstName }}
-                                @else
-                                    {{ Auth::user()->email }}
-                                @endif
-                            </div>
+            @if(Auth::user())
+                <!-- Settings Dropdown -->
+                <div class="hidden sm:flex sm:items-center sm:ms-6">
+                    <x-dropdown align="right" width="48">
+                        <x-slot name="trigger">
+                            <button class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-white bg-[#5b9fe3] hover:text-gray-700 focus:outline-none transition ease-in-out duration-150">
+                                <div>
+                                    @if (isset(Auth::user()->contact->firstName))
+                                        {{ Auth::user()->contact->firstName }}
+                                    @else
+                                        {{ Auth::user()->email }}
+                                    @endif
+                                </div>
 
-                            <div class="ms-1">
-                                <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-                                    <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
-                                </svg>
-                            </div>
-                        </button>
-                    </x-slot>
+                                <div class="ms-1">
+                                    <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                                    </svg>
+                                </div>
+                            </button>
+                        </x-slot>
 
-                    <x-slot name="content">
-                        <x-dropdown-link :href="route('profile.edit')">
-                            {{ __('Profile') }}
-                        </x-dropdown-link>
-
-                        <!-- Authentication -->
-                        <form method="POST" action="{{ route('logout') }}">
-                            @csrf
-
-                            <x-dropdown-link :href="route('logout')"
-                                    onclick="event.preventDefault();
-                                                this.closest('form').submit();">
-                                {{ __('Log Out') }}
+                        <x-slot name="content">
+                            <x-dropdown-link :href="route('profile.edit')">
+                                {{ __('Profile') }}
                             </x-dropdown-link>
-                        </form>
-                    </x-slot>
-                </x-dropdown>
-            </div>
+
+                            <!-- Authentication -->
+                            <form method="POST" action="{{ route('logout') }}">
+                                @csrf
+
+                                <x-dropdown-link :href="route('logout')"
+                                        onclick="event.preventDefault();
+                                                    this.closest('form').submit();">
+                                    {{ __('Log Out') }}
+                                </x-dropdown-link>
+                            </form>
+                        </x-slot>
+                    </x-dropdown>
+                </div>
+            @else
+                <div>
+                    <x-nav-link
+                        :href="route('login')"
+                        class="inline-block px-5 py-1.5 dark:text-[#EDEDEC] text-[#1b1b18] border border-transparent hover:border-[#19140035] dark:hover:border-[#3E3E3A] rounded-sm text-sm leading-normal"
+                    >
+                        Log in
+                    </x-nav-link>
+
+                    @if (Route::has('register'))
+                        <x-nav-link
+                            :href="route('register')"
+                            class="inline-block px-5 py-1.5 dark:text-[#EDEDEC] border-[#19140035] hover:border-[#1915014a] border text-[#1b1b18] dark:border-[#3E3E3A] dark:hover:border-[#62605b] rounded-sm text-sm leading-normal">
+                            Register
+                        </x-nav-link>
+                    @endif
+                </div>
+            @endif
 
             <!-- Hamburger -->
             <div class="-me-2 flex items-center sm:hidden">
@@ -103,45 +128,95 @@
     <!-- Responsive Navigation Menu -->
     <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden">
         <div class="pt-2 pb-3 space-y-1">
-            <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
-                {{ __('Dashboard') }}
-            </x-responsive-nav-link>
+            @if (Auth::user())
+                <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
+                    {{ __('Dashboard') }}
+                </x-responsive-nav-link>
+                    
+                @if(Auth::user()->roles->roleName === 'owner')
+                    <x-responsive-nav-link :href="route('users.index')" :active="request()->routeIs('users.index')">
+                        {{ __('Gebruikers') }}
+                    </x-responsive-nav-link>
 
-            @if(Auth::user()->roles->roleName === 'owner')
-                <x-responsive-nav-link :href="route('owner.unpaid-invoices')" :active="request()->routeIs('owner.unpaid-invoices')">
-                    {{ __('Openstaande Betalingen') }}
+                    <x-responsive-nav-link :href="route('owner.customers.index')" :active="request()->routeIs('owner.customers.index')">
+                        {{ __('Klanten') }}
+                    </x-responsive-nav-link>
+
+                    <x-responsive-nav-link :href="route('owner.instructors.index')" :active="request()->routeIs('owner.instructors.index')">
+                        {{ __('Instructeurs') }}
+                    </x-responsive-nav-link>
+
+                    <x-responsive-nav-link :href="route('owner.unpaid-invoices')" :active="request()->routeIs('owner.unpaid-invoices')">
+                        {{ __('Onbetaalde reserveringen') }}
+                    </x-responsive-nav-link>
+                @endif
+
+                @if(Auth::user()->roles->roleName === 'instructor')
+                    <x-responsive-nav-link :href="route('instructor.customers.index')" :active="request()->routeIs('instructor.customers.index')">
+                        {{ __('Klanten') }}
+                    </x-responsive-nav-link>
+                @endif
+
+                @if(Auth::user()->roles->roleName === 'customer')
+                    <x-responsive-nav-link :href="route('reservations.index')" :active="request()->routeIs('reservations.index')">
+                        {{ __('Reservering beheren') }}
+                    </x-responsive-nav-link>
+                @endif
+            @else
+                <x-responsive-nav-link :href="route('home')" :active="request()->routeIs('home')">
+                    {{ __('Home') }}
                 </x-responsive-nav-link>
             @endif
         </div>
 
-        <!-- Responsive Settings Options -->
-        <div class="pt-4 pb-1 border-t border-gray-200 dark:border-gray-600">
-            <div class="px-4">
-                <div class="font-medium text-base text-gray-800 dark:text-gray-200">
-                    @if (isset(Auth::user()->contact->firstName))
-                        {{ Auth::user()->contact->firstName }}
-                    @else
-                        {{ Auth::user()->email }}
-                    @endif
+        @if(Auth::user())
+            <!-- Responsive Settings Options -->
+            <div class="pt-4 pb-1 border-t border-gray-200 dark:border-gray-600">
+                <div class="px-4">
+                    <div class="font-medium text-base text-gray-800 dark:text-gray-200">
+                        @if (isset(Auth::user()->contact->firstName))
+                            {{ Auth::user()->contact->firstName }}
+                        @else
+                            {{ Auth::user()->email }}
+                        @endif
+                    </div>
+                </div>
+
+                <div class="mt-3 space-y-1">
+                    <x-responsive-nav-link :href="route('profile.edit')">
+                        {{ __('Profile') }}
+                    </x-responsive-nav-link>
+
+                    <!-- Authentication -->
+                    <form method="POST" action="{{ route('logout') }}">
+                        @csrf
+
+                        <x-responsive-nav-link :href="route('logout')"
+                                onclick="event.preventDefault();
+                                            this.closest('form').submit();">
+                            {{ __('Log Out') }}
+                        </x-responsive-nav-link>
+                    </form>
                 </div>
             </div>
-
-            <div class="mt-3 space-y-1">
-                <x-responsive-nav-link :href="route('profile.edit')">
-                    {{ __('Profile') }}
+        @else
+            <div class="flex flex-col mb-2">
+                <x-responsive-nav-link
+                    :href="route('login')"
+                    class="inline-block px-5 py-1.5 dark:text-[#EDEDEC] text-[#1b1b18] border border-transparent hover:border-[#19140035] dark:hover:border-[#3E3E3A] rounded-sm text-sm leading-normal"
+                >
+                    Log in
                 </x-responsive-nav-link>
 
-                <!-- Authentication -->
-                <form method="POST" action="{{ route('logout') }}">
-                    @csrf
-
-                    <x-responsive-nav-link :href="route('logout')"
-                            onclick="event.preventDefault();
-                                        this.closest('form').submit();">
-                        {{ __('Log Out') }}
+                @if (Route::has('register'))
+                    <x-responsive-nav-link
+                        :href="route('register')"
+                        class="inline-block px-5 py-1.5 dark:text-[#EDEDEC] border-[#19140035] hover:border-[#1915014a] border text-[#1b1b18] dark:border-[#3E3E3A] dark:hover:border-[#62605b] rounded-sm text-sm leading-normal"
+                    >
+                        Register
                     </x-responsive-nav-link>
-                </form>
+                @endif
             </div>
-        </div>
+        @endif
     </div>
 </nav>
