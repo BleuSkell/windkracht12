@@ -6,11 +6,11 @@
             </h2>
             <div class="flex gap-4">
                 <a href="{{ route('instructor.schedule.week', ['date' => \Carbon\Carbon::parse($startDate)->subWeek()->toDateString()]) }}" 
-                   class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">
+                   class="bg-white hover:bg-gray-300 text-[#0e1142] font-bold py-2 px-4 rounded">
                     Vorige Week
                 </a>
                 <a href="{{ route('instructor.schedule.week', ['date' => \Carbon\Carbon::parse($startDate)->addWeek()->toDateString()]) }}" 
-                   class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">
+                   class="bg-white hover:bg-gray-300 text-[#0e1142] font-bold py-2 px-4 rounded">
                     Volgende Week
                 </a>
             </div>
@@ -19,7 +19,7 @@
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
+            <div class="bg-[#0e1142] overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900 dark:text-gray-100">
                     <div class="grid grid-cols-7 gap-4">
                         @foreach($lessons->sortKeys() as $date => $dayLessons)

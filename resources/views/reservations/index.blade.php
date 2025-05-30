@@ -18,14 +18,14 @@
                 </div>
             @endif
 
-            <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 text-gray-900 dark:text-gray-100">
+            <div class="bg-[#0e1142] overflow-hidden shadow-sm sm:rounded-lg">
+                <div class="p-6 text-white">
                     @if($reservations->isEmpty())
                         <p class="text-center py-4">Je hebt nog geen reserveringen.</p>
                     @else
                         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                             @foreach($reservations as $reservation)
-                                <div class="border rounded-lg p-4 bg-gray-50 dark:bg-gray-700">
+                                <div class="rounded-lg p-4 bg-[#5b9fe3]">
                                     <h3 class="font-bold text-lg mb-2">{{ $reservation->package->name }}</h3>
                                     
                                     <div class="space-y-2 mb-4">
@@ -68,9 +68,9 @@
                                     @endif
 
                                     @if(!$reservation->cancellationStatus)
-                                        <div class="mt-4">
+                                        <div class="mt-4 mb-4">
                                             <button onclick="showCancelModal({{ $reservation->id }})" 
-                                                    class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded text-sm">
+                                                    class="bg-red-700 hover:bg-red-500 text-white font-bold py-2 px-4 rounded text-sm">
                                                 Les annuleren
                                             </button>
                                         </div>
@@ -148,7 +148,7 @@
                                             <p><span class="font-semibold">Bedrag:</span> €{{ number_format($reservation->invoice->amount, 2) }}</p>
                                             <p class="mb-2">
                                                 <span class="font-semibold">Status:</span>
-                                                <span class="@if($reservation->invoice->status === 'paid') text-green-500 @else text-red-500 @endif">
+                                                <span class="@if($reservation->invoice->status === 'paid') text-white @else text-red-500 @endif">
                                                     {{ $reservation->invoice->status === 'paid' ? 'Betaald' : 'Niet betaald' }}
                                                 </span>
                                             </p>

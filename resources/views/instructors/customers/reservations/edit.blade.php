@@ -7,15 +7,15 @@
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 text-gray-900 dark:text-gray-100">
+            <div class="bg-[#0e1142] overflow-hidden shadow-sm sm:rounded-lg">
+                <div class="p-6 text-[#0e1142]">
                     <form method="POST" action="{{ route('instructor.customers.reservations.update', [$customer, $reservation]) }}" class="space-y-6">
                         @csrf
                         @method('PUT')
 
                         <div>
                             <x-input-label for="packageId" value="Pakket" />
-                            <select id="packageId" name="packageId" class="mt-1 block w-full" required>
+                            <select id="packageId" name="packageId" class="mt-1 block w-full rounded-lg" required>
                                 @foreach($packages as $package)
                                     <option value="{{ $package->id }}" {{ $reservation->packageId == $package->id ? 'selected' : '' }}>
                                         {{ $package->name }} - €{{ number_format($package->price, 2) }}
@@ -26,7 +26,7 @@
 
                         <div>
                             <x-input-label for="locationId" value="Locatie" />
-                            <select id="locationId" name="locationId" class="mt-1 block w-full" required>
+                            <select id="locationId" name="locationId" class="mt-1 block w-full rounded-lg" required>
                                 @foreach($locations as $location)
                                     <option value="{{ $location->id }}" {{ $reservation->locationId == $location->id ? 'selected' : '' }}>
                                         {{ $location->name }}
@@ -48,9 +48,12 @@
                         </div>
 
                         <div class="flex items-center justify-end mt-4">
-                            <x-secondary-button onclick="window.history.back()" type="button" class="mr-3">
-                                Annuleren
-                            </x-secondary-button>
+                            <a href="{{  route('instructor.customers.lessons', $customer) }}">
+                                <x-secondary-button class="mr-3">
+                                    Annuleren
+                                </x-secondary-button>
+                            </a>
+
                             <x-primary-button>
                                 Wijzigingen Opslaan
                             </x-primary-button>

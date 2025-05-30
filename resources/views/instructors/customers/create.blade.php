@@ -1,6 +1,6 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
+        <h2 class="font-semibold text-xl text-white leading-tight">
             {{ __('Koppel een klant') }}
         </h2>
     </x-slot>
@@ -17,8 +17,8 @@
                 </div>
             @endif
 
-            <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 text-gray-900 dark:text-gray-100">
+            <div class="bg-[#0e1142] overflow-hidden shadow-sm sm:rounded-lg">
+                <div class="p-6 text-white">
                     @if($availableCustomers->isEmpty())
                         <p class="text-center py-4">Er zijn geen beschikbare klanten om te koppelen.</p>
                     @else
@@ -26,7 +26,7 @@
                             @csrf
                             <div>
                                 <x-input-label for="customer_id" value="Selecteer een klant" />
-                                <select id="customer_id" name="customer_id" class="mt-1 block w-full rounded-md border-gray-300 dark:bg-gray-700 dark:text-gray-100" required>
+                                <select id="customer_id" name="customer_id" class="mt-1 block w-full rounded-md border-[#5b9fe3] bg-white text-[#0e1142]" required>
                                     <option value="">Kies een klant...</option>
                                     @foreach($availableCustomers as $customer)
                                         <option value="{{ $customer->id }}">
@@ -39,10 +39,12 @@
                             </div>
 
                             <div class="flex items-center justify-end mt-4">
-                                <a href="{{ route('instructor.customers.index') }}" 
-                                   class="inline-flex items-center px-4 py-2 bg-gray-800 dark:bg-gray-200 border border-transparent rounded-md font-semibold text-xs text-white dark:text-gray-800 uppercase tracking-widest hover:bg-gray-700 dark:hover:bg-white focus:bg-gray-700 dark:focus:bg-white active:bg-gray-900 dark:active:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800 transition ease-in-out duration-150 mr-3">
-                                    Annuleren
+                                <a href="{{ route('instructor.customers.index') }}">
+                                    <x-secondary-button class="mr-4">
+                                        Annuleren
+                                    </x-secondary-button>
                                 </a>
+
                                 <x-primary-button>
                                     Klant Koppelen
                                 </x-primary-button>

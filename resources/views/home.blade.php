@@ -19,7 +19,7 @@
             </style>
         @endif
     </head>
-    <body class="bg-[#fff8ed] min-h-screen">
+    <body class="bg-[#ffffff] min-h-screen">
         @include('layouts.navigation')
 
         <header>

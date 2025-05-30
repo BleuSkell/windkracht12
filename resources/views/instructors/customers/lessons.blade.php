@@ -13,7 +13,7 @@
                 </div>
             @endif
 
-            <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
+            <div class="bg-[#0e1142] overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900 dark:text-gray-100">
                     @if($lessons->isEmpty())
                         <p class="text-center">Deze klant heeft nog geen lessen.</p>
@@ -33,10 +33,10 @@
                                     @foreach($lessons as $lesson)
                                         <tr>
                                             <td class="px-4 py-2">
-                                                {{ $lesson->reservationDate }}
+                                                {{ date('d-m-Y', strtotime($lesson->reservationDate)) }}
                                             </td>
                                             <td class="px-4 py-2">
-                                                {{ $lesson->reservationTime }}
+                                                {{ date('H:i', strtotime($lesson->reservationTime)) }}
                                             </td>
                                             <td class="px-4 py-2">
                                                 {{ $lesson->package->name }}
@@ -98,6 +98,14 @@
                             </table>
                         </div>
                     @endif
+                </div>
+
+                <div class="flex items-center justify-end mb-4">
+                    <a href="{{  route('instructor.customers.index') }}">
+                        <x-secondary-button class="mr-3">
+                            Terug naar klanten
+                        </x-secondary-button>
+                    </a>
                 </div>
             </div>
         </div>

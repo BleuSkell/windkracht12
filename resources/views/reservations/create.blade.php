@@ -16,14 +16,14 @@
                     </ul>
                 </div>
             @endif
-            <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
+            <div class="bg-[#0e1142] overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900 dark:text-gray-100">
                     <form method="POST" action="{{ route('reservations.store') }}" class="space-y-6">
                         @csrf
 
                         <div>
                             <x-input-label for="packageId" value="Kies een pakket" />
-                            <select id="packageId" name="packageId" class="mt-1 block w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm" required>
+                            <select id="packageId" name="packageId" class="mt-1 block w-full bg-white border-[#5b9fe3] text-[#0e1142] rounded-lg" required>
                                 <option value="">Selecteer een pakket</option>
                                 @foreach($packages as $package)
                                     <option value="{{ $package->id }}" data-is-duo="{{ $package->isDuo ? 1 : 0 }}">
@@ -36,7 +36,7 @@
 
                         <div>
                             <x-input-label for="locationId" value="Kies een locatie" />
-                            <select id="locationId" name="locationId" class="mt-1 block w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm" required>
+                            <select id="locationId" name="locationId" class="mt-1 block w-full bg-white border-[#5b9fe3] text-[#0e1142] rounded-lg" required>
                                 <option value="">Selecteer een locatie</option>
                                 @foreach($locations as $location)
                                     <option value="{{ $location->id }}">{{ $location->name }}</option>
@@ -46,14 +46,14 @@
                         </div>
 
                         <div>
-                            <x-input-label for="reservationDate" value="Kies een locatie" />
-                            <input type="date" name="reservationDate" id="reservationDate" class="mt-1 block w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm" required>
+                            <x-input-label for="reservationDate" value="Kies een datum" />
+                            <input type="date" name="reservationDate" id="reservationDate" class="mt-1 block w-full mt-1 block w-full bg-white border-[#5b9fe3] text-[#0e1142] rounded-lg" required>
                             <x-input-error :messages="$errors->get('reservationDate')" class="mt-2" />
                         </div>
 
                         <div>
                             <x-input-label for="reservationTime" value="Kies een tijd" />
-                            <input type="time" name="reservationTime" id="reservationTime" class="mt-1 block w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm" required>
+                            <input type="time" name="reservationTime" id="reservationTime" class="mt-1 block w-full bg-white border-[#5b9fe3] text-[#0e1142] rounded-lg" required>
                             <x-input-error :messages="$errors->get('reservationTime')" class="mt-2" />
                         </div>
 
