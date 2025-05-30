@@ -19,7 +19,7 @@
                 </div>
             @endif
 
-            <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
+            <div class="bg-[#0e1142] overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900 dark:text-gray-100">
                     @if($instructors->isEmpty())
                         <p class="text-center py-4">Er zijn nog geen instructeurs.</p>
@@ -27,7 +27,7 @@
                         <div class="overflow-x-auto">
                             <table class="min-w-full table-auto">
                                 <thead>
-                                    <tr class="bg-gray-100 dark:bg-gray-700">
+                                    <tr class="bg-[#5b9fe3]">
                                         <th class="px-4 py-2">Naam</th>
                                         <th class="px-4 py-2">Email</th>
                                         <th class="px-4 py-2">BSN</th>
