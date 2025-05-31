@@ -14,9 +14,9 @@
                             md:flex-row md:items-center md:justify-between
                 ">
                     @if(Auth::user()->roles->roleName === 'instructor')
-                        <a href="{{ route('instructor.schedule.day') }}">
+                        <a href="{{ route('instructor.schedule.month') }}">
                             <button class="bg-white p-4 rounded-lg mt-4 md:mt-0">
-                                {{ __('Dagoverzicht') }}
+                                {{ __('Maandoverzicht') }}
                             </button>
                         </a>
 
@@ -26,9 +26,9 @@
                             </button>
                         </a>
 
-                        <a href="{{ route('instructor.schedule.month') }}">
+                        <a href="{{ route('instructor.schedule.day') }}">
                             <button class="bg-white p-4 rounded-lg mt-4 md:mt-0">
-                                {{ __('Maandoverzicht') }}
+                                {{ __('Dagoverzicht') }}
                             </button>
                         </a>
 
