@@ -46,34 +46,42 @@
                                             <td class="px-4 py-2">{{ $instructor->user->contact->bsnNumber }}</td>
                                             <td class="px-4 py-2">{{ $instructor->customers->count() }}</td>
                                             <td class="px-4 py-2 space-x-2">
-                                                <div class="flex flex-wrap gap-2">
-                                                    <div class="flex space-x-2">
+                                                <div class="flex flex-col">
+                                                    <div class="flex space-x-2 text-center
+                                                                md:flex-col
+                                                    ">
                                                         <a href="{{ route('owner.instructors.schedule.day', $instructor) }}" 
                                                            class="text-green-500 hover:text-green-700">
-                                                            Dag
+                                                            Dag overzicht
                                                         </a>
                                                         <a href="{{ route('owner.instructors.schedule.week', $instructor) }}" 
                                                            class="text-green-500 hover:text-green-700">
-                                                            Week
+                                                            Week overzicht
                                                         </a>
                                                         <a href="{{ route('owner.instructors.schedule.month', $instructor) }}" 
                                                            class="text-green-500 hover:text-green-700">
-                                                            Maand
+                                                            Maand overzicht
                                                         </a>
                                                     </div>
-                                                    <a href="{{ route('owner.instructors.edit', $instructor) }}" 
-                                                       class="text-blue-500 hover:text-blue-700">
-                                                        Bewerken
-                                                    </a>
-                                                    <form class="inline" method="POST" 
-                                                          action="{{ route('owner.instructors.destroy', $instructor) }}"
-                                                          onsubmit="return confirm('Weet je zeker dat je deze instructeur wilt verwijderen?');">
-                                                        @csrf
-                                                        @method('DELETE')
-                                                        <button type="submit" class="text-red-500 hover:text-red-700">
-                                                            Verwijderen
-                                                        </button>
-                                                    </form>
+
+                                                    <div class="flex flex-row justify-center mt-2
+                                                                md:flex-col md:items-center
+                                                    ">
+                                                        <a href="{{ route('owner.instructors.edit', $instructor) }}" 
+                                                        class="text-blue-500 hover:text-blue-700 mr-2 md:mr-0">
+                                                            Bewerken
+                                                        </a>
+
+                                                        <form class="inline" method="POST" 
+                                                            action="{{ route('owner.instructors.destroy', $instructor) }}"
+                                                            onsubmit="return confirm('Weet je zeker dat je deze instructeur wilt verwijderen?');">
+                                                            @csrf
+                                                            @method('DELETE')
+                                                            <button type="submit" class="text-red-500 hover:text-red-700">
+                                                                Verwijderen
+                                                            </button>
+                                                        </form>
+                                                    </div>
                                                 </div>
                                             </td>
                                         </tr>

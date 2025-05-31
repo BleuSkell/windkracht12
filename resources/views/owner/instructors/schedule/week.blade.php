@@ -22,13 +22,16 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-[#0e1142] overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-white">
-                    <div class="grid grid-cols-7 gap-4">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-7 gap-4">
                         @php
                             $currentDate = \Carbon\Carbon::parse($startDate);
                         @endphp
                         @for($i = 0; $i < 7; $i++)
                             <div class="border border-[#5b9fe3] rounded p-4 bg-white/10">
-                                <h3 class="font-bold mb-2 text-[#5b9fe3]">{{ $currentDate->format('D d M') }}</h3>
+                                <h3 class="font-bold mb-2 text-[#5b9fe3] flex justify-between items-center">
+                                    <span>{{ $currentDate->format('D d M') }}</span>
+                                    <span class="text-sm">Week {{ $currentDate->format('W') }}</span>
+                                </h3>
                                 @php
                                     $dayLessons = $lessons->get($currentDate->format('Y-m-d'), collect());
                                 @endphp

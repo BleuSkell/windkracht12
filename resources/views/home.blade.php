@@ -93,9 +93,15 @@
                     </p>
 
                     <div class="flex justify-center md:justify-start">
-                        <a href="" class="bg-[#5b9fe3] text-white px-4 py-2 rounded-md mt-4 hover:bg-[#a23a36] transition">
-                            Reserveer nu! →
-                        </a>
+                        @auth
+                            <a href="{{ route('reservations.index') }}" class="bg-[#5b9fe3] text-white px-4 py-2 rounded-md mt-4 hover:bg-[#265d94] transition">
+                                Reserveer nu! →
+                            </a>
+                        @else
+                            <a href="{{ route('register') }}" class="bg-[#5b9fe3] text-white px-4 py-2 rounded-md mt-4 hover:bg-[#265d94] transition">
+                                Reserveer nu! →
+                            </a>
+                        @endauth
                     </div>
                 </div>
             </div>

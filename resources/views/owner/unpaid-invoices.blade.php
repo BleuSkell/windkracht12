@@ -7,7 +7,7 @@
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
+            <div class="bg-[#0e1142] overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900 dark:text-gray-100">
                     @if($unpaidInvoices->isEmpty())
                         <p class="text-center py-4">Er zijn geen openstaande betalingen.</p>
@@ -15,7 +15,7 @@
                         <div class="overflow-x-auto">
                             <table class="min-w-full">
                                 <thead>
-                                    <tr class="bg-gray-100 dark:bg-gray-700">
+                                    <tr class="bg-[#5b9fe3] text-white">
                                         <th class="px-4 py-2 text-left">Factuurnummer</th>
                                         <th class="px-4 py-2 text-left">Klant</th>
                                         <th class="px-4 py-2 text-left">Pakket</th>
@@ -44,7 +44,7 @@
                                                 @endif
                                             </td>
                                             <td class="px-4 py-2">
-                                                <span class="px-2 py-1 text-xs rounded-full bg-red-100 text-red-800 dark:bg-red-800 dark:text-red-100">
+                                                <span class="px-2 py-1 text-xs rounded-full bg-red-800 text-red-100">
                                                     Niet betaald
                                                 </span>
                                             </td>
