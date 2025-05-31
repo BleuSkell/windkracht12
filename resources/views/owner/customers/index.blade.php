@@ -24,58 +24,69 @@
                     @if($customers->isEmpty())
                         <p class="text-center py-4">Er zijn nog geen klanten.</p>
                     @else
-                        <table class="min-w-full text-center">
-                            <thead>
-                                <tr>
-                                    <th class="px-6 py-3 bg-[#5b9fe3] text-center">Naam</th>
-                                    <th class="px-6 py-3 bg-[#5b9fe3] text-center">Email</th>
-                                    <th class="px-6 py-3 bg-[#5b9fe3] text-center">Adres</th>
-                                    <th class="px-6 py-3 bg-[#5b9fe3] text-center">Instructeur(s)</th>
-                                    <th class="px-6 py-3 bg-[#5b9fe3] text-center">Acties</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach($customers as $customer)
-                                    <tr class="border-t">
-                                        <td class="px-6 py-4">
-                                            {{ $customer->user->contact->firstName }}
-                                            {{ $customer->user->contact->lastName }}
-                                        </td>
-                                        <td class="px-6 py-4">{{ $customer->user->email }}</td>
-                                        <td class="px-6 py-4">
-                                            {{ $customer->user->contact->adress }}, 
-                                            {{ $customer->user->contact->city }}
-                                        </td>
-                                        <td class="px-6 py-4">
-                                            @foreach($customer->instructors as $instructor)
-                                                {{ $instructor->user->contact->firstName }}
-                                                {{ $instructor->user->contact->lastName }}
-                                                @if(!$loop->last), @endif
-                                            @endforeach
-                                        </td>
-                                        <td class="px-6 py-4 text-right">
-                                            <a href="{{ route('owner.customers.lessons', $customer) }}" 
-                                               class="text-blue-500 hover:text-blue-700 mr-2">
-                                                Lessen
-                                            </a>
-                                            <a href="{{ route('owner.customers.edit', $customer) }}" 
-                                               class="text-blue-500 hover:text-blue-700 mr-2">
-                                                Bewerken
-                                            </a>
-                                            <form class="inline-block" method="POST" 
-                                                  action="{{ route('owner.customers.destroy', $customer) }}"
-                                                  onsubmit="return confirm('Weet je zeker dat je deze klant wilt verwijderen?');">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="text-red-600 hover:text-red-900">
-                                                    Verwijderen
-                                                </button>
-                                            </form>
-                                        </td>
+                        <div class="overflow-x-auto">
+                            <table class="min-w-full text-center">
+                                <thead class="hidden md:table-header-group">
+                                    <tr>
+                                        <th class="px-6 py-3 bg-[#5b9fe3] text-center">Naam</th>
+                                        <th class="px-6 py-3 bg-[#5b9fe3] text-center">Email</th>
+                                        <th class="px-6 py-3 bg-[#5b9fe3] text-center">Adres</th>
+                                        <th class="px-6 py-3 bg-[#5b9fe3] text-center">Instructeur(s)</th>
+                                        <th class="px-6 py-3 bg-[#5b9fe3] text-center">Acties</th>
                                     </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
+                                </thead>
+                                <tbody class="block md:table-row-group">
+                                    @foreach($customers as $customer)
+                                        <tr class="block md:table-row border-b border-gray-700 md:border-none">
+                                            <td class="block md:table-cell px-6 py-4 text-left md:text-center">
+                                                <span class="font-bold inline-block md:hidden">Naam: </span>
+                                                {{ $customer->user->contact->firstName }}
+                                                {{ $customer->user->contact->lastName }}
+                                            </td>
+                                            <td class="block md:table-cell px-6 py-4 text-left md:text-center">
+                                                <span class="font-bold inline-block md:hidden">Email: </span>
+                                                {{ $customer->user->email }}
+                                            </td>
+                                            <td class="block md:table-cell px-6 py-4 text-left md:text-center">
+                                                <span class="font-bold inline-block md:hidden">Adres: </span>
+                                                {{ $customer->user->contact->adress }}, 
+                                                {{ $customer->user->contact->city }}
+                                            </td>
+                                            <td class="block md:table-cell px-6 py-4 text-left md:text-center">
+                                                <span class="font-bold inline-block md:hidden">Instructeur(s): </span>
+                                                @foreach($customer->instructors as $instructor)
+                                                    {{ $instructor->user->contact->firstName }}
+                                                    {{ $instructor->user->contact->lastName }}
+                                                    @if(!$loop->last), @endif
+                                                @endforeach
+                                            </td>
+                                            <td class="block md:table-cell px-6 py-4 space-y-2 md:space-y-0 text-left md:text-right">
+                                                <span class="font-bold inline-block md:hidden">Acties: </span>
+                                                <div class="flex flex-col md:flex-row md:justify-end gap-2">
+                                                    <a href="{{ route('owner.customers.lessons', $customer) }}" 
+                                                       class="text-blue-500 hover:text-blue-700">
+                                                        Lessen
+                                                    </a>
+                                                    <a href="{{ route('owner.customers.edit', $customer) }}" 
+                                                       class="text-blue-500 hover:text-blue-700">
+                                                        Bewerken
+                                                    </a>
+                                                    <form class="inline-block" method="POST" 
+                                                          action="{{ route('owner.customers.destroy', $customer) }}"
+                                                          onsubmit="return confirm('Weet je zeker dat je deze klant wilt verwijderen?');">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <button type="submit" class="text-red-600 hover:text-red-900">
+                                                            Verwijderen
+                                                        </button>
+                                                    </form>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
                     @endif
                 </div>
             </div>

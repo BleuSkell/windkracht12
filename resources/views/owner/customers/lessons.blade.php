@@ -73,38 +73,40 @@
                                                 </span>
                                             </td>
                                             <td class="px-4 py-2 space-x-2">
-                                                @if($lesson->invoice && $lesson->invoice->status === 'paid' && $lesson->status !== 'confirmed')
+                                                <div class="flex flex-col items-center">
+                                                    @if($lesson->invoice && $lesson->invoice->status === 'paid' && $lesson->status !== 'confirmed')
+                                                        <form method="POST" 
+                                                            action="{{ route('owner.reservations.confirm', $lesson) }}"
+                                                            class="inline-block">
+                                                            @csrf
+                                                            <button type="submit" 
+                                                                    class="bg-green-600 hover:bg-green-800 text-white p-2 rounded-lg text-sm mt-4"
+                                                                    onclick="return confirm('Weet je zeker dat je deze reservering definitief wilt maken?')">
+                                                                Definitief maken
+                                                            </button>
+                                                        </form>
+                                                    @endif
                                                     <form method="POST" 
-                                                          action="{{ route('owner.reservations.confirm', $lesson) }}"
-                                                          class="inline-block">
+                                                        action="{{ route('owner.reservations.cancel-weather', [$customer, $lesson]) }}"
+                                                        class="inline-block">
                                                         @csrf
                                                         <button type="submit" 
-                                                                class="bg-green-500 hover:bg-green-700 text-white font-bold py-1 px-3 rounded text-sm"
-                                                                onclick="return confirm('Weet je zeker dat je deze reservering definitief wilt maken?')">
-                                                            Definitief maken
+                                                                class="bg-blue-600 hover:bg-blue-800 text-white p-2 rounded-lg text-sm mt-4"
+                                                                onclick="return confirm('Weet je zeker dat je deze les wilt annuleren wegens weer?')">
+                                                            Annuleren (Weer)
                                                         </button>
                                                     </form>
-                                                @endif
-                                                <form method="POST" 
-                                                      action="{{ route('owner.reservations.cancel-weather', [$customer, $lesson]) }}"
-                                                      class="inline-block">
-                                                    @csrf
-                                                    <button type="submit" 
-                                                            class="text-blue-600 hover:text-blue-800"
-                                                            onclick="return confirm('Weet je zeker dat je deze les wilt annuleren wegens weer?')">
-                                                        Annuleren (Weer)
-                                                    </button>
-                                                </form>
-                                                <form method="POST" 
-                                                      action="{{ route('owner.reservations.cancel-sick', [$customer, $lesson]) }}"
-                                                      class="inline-block">
-                                                    @csrf
-                                                    <button type="submit" 
-                                                            class="text-red-600 hover:text-red-800"
-                                                            onclick="return confirm('Weet je zeker dat je deze les wilt annuleren wegens ziekte?')">
-                                                        Annuleren (Ziek)
-                                                    </button>
-                                                </form>
+                                                    <form method="POST" 
+                                                        action="{{ route('owner.reservations.cancel-sick', [$customer, $lesson]) }}"
+                                                        class="inline-block">
+                                                        @csrf
+                                                        <button type="submit" 
+                                                                class="bg-red-600 hover:bg-red-800 text-white p-2 rounded-lg text-sm mt-4"
+                                                                onclick="return confirm('Weet je zeker dat je deze les wilt annuleren wegens ziekte?')">
+                                                            Annuleren (Ziek)
+                                                        </button>
+                                                    </form>
+                                                </div>
                                             </td>
                                         </tr>
                                     @endforeach
