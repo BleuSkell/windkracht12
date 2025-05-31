@@ -102,19 +102,23 @@
 
             <div class="statements mt-8 md:mt-16">
                 <div class="flex flex-col items-center">
-                    <img src="{{ asset('img/kitesurfer.png') }}" alt="statement img 2" class="w-40 sm:w-56 md:w-80 mt-4 mb-8">
+                    <div>
+                        <h2 class="text-2xl sm:text-3xl md:text-4xl font-bold mb-4 text-[#0e1142] text-center">
+                            Wat onze cursisten zeggen
+                        </h2>
+                    </div>
 
                     <div class="reviews w-full max-w-xl text-[#0e1142] px-4">
                         <p class="mb-4 text-sm md:text-base">
-                            ⭐️⭐️⭐️⭐️⭐️"Zeer tevreden over de lessen! Mijn instructeur bleef altijd rustig en legde alles duidelijk uit. Dankzij hun begeleiding ben ik in één keer geslaagd. Een aanrader voor iedereen die op zoek is naar een rijschool met persoonlijke aandacht."– Sophie J.
+                            ⭐️⭐️⭐️⭐️⭐️"Geweldige ervaring bij Kitesurfschool 12! Jeroen is een super instructeur die alles duidelijk uitlegt. In 3 lessen had ik de basics onder de knie. Het materiaal is top en de locatie perfect voor beginners."– Tim V.
                         </p>
 
                         <p class="mb-4 text-sm md:text-base">
-                            ⭐️⭐️⭐️⭐️⭐️"Goede service en fijne sfeer. De lesauto was modern en comfortabel, en de planning verliep altijd soepel. Ik voelde me goed voorbereid op het praktijkexamen."– Anouar D.
+                            ⭐️⭐️⭐️⭐️⭐️"Mees heeft me in het duo-pakket begeleid naar het zelfstandig kitesurfen. Zijn professionele aanpak en geduld maken het leren super leuk. Zelfs met weinig wind weet hij er een leerzame les van te maken."– Emma K.
                         </p>
 
                         <p class="mb-4 text-sm md:text-base">
-                            ⭐️⭐️⭐️⭐️"Professionele aanpak. Ik was eerst erg nerveus om te beginnen, maar mijn instructeur hielp me rustig op weg. Af en toe iets strenger, maar precies wat ik nodig had om door te zetten."– Laura M.
+                            ⭐️⭐️⭐️⭐️⭐️"Als complete beginner was ik eerst wat angstig, maar Mike stelde me direct op mijn gemak. Door zijn rustige uitleg en gestructureerde lessen voelde ik me snel zeker op het water. Fantastische school!"– Sander R.
                         </p>
                     </div>
                 </div>
